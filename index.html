@@ -3,247 +3,353 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Farang Kee Nok Simulator</title>
-<link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Teko:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  :root{
-    --bg:#0a0a0f;--bg2:#0f0f1a;--bg3:#141420;--bg4:#1a1a2e;
-    --text:#e8e8f0;--text2:#9999bb;--text3:#6666aa;
-    --orange:#ff6b00;--orangedim:#ff6b0022;
-    --green:#00ff88;--greendim:#00ff8822;
-    --pink:#ff2d7a;--pinkdim:#ff2d7a22;
-    --blue:#00d4ff;--bluedim:#00d4ff22;
-    --red:#ff3030;--yellow:#ffd600;
-    --border:#ffffff11;--border2:#ffffff22;
-  }
-  body{background:var(--bg);color:var(--text);font-family:'Space Mono',monospace;min-height:100vh;overflow-x:hidden}
-  #scanlines{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px)}
-  header{text-align:center;padding:2rem 1rem 1rem}
-  .logo{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,8vw,5rem);line-height:1;letter-spacing:4px;background:linear-gradient(135deg,var(--orange),var(--yellow),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 30px rgba(255,107,0,0.5))}
-  .logo-sub{font-family:'Bebas Neue',sans-serif;font-size:clamp(1rem,3vw,1.6rem);letter-spacing:8px;color:var(--text3);margin-top:0.1rem}
-  .tagline{font-size:0.65rem;color:var(--text3);letter-spacing:3px;text-transform:uppercase;margin-top:0.4rem}
-  .badge{display:inline-block;font-size:0.55rem;background:var(--orangedim);border:1px solid var(--orange);color:var(--orange);padding:2px 8px;border-radius:4px;letter-spacing:2px;margin-top:0.5rem}
-  .modes{display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;padding:1rem;max-width:900px;margin:0 auto}
-  @media(min-width:640px){.modes{grid-template-columns:repeat(4,1fr)}}
-  .mode-btn{padding:1rem 0.75rem;border:1px solid var(--border2);background:var(--bg3);border-radius:8px;cursor:pointer;transition:all 0.2s;text-align:center;font-family:'Space Mono',monospace;color:var(--text2);position:relative;overflow:hidden}
-  .mode-btn:hover{transform:translateY(-2px)}
-  .mode-btn .emoji{font-size:1.8rem;display:block;margin-bottom:0.4rem}
-  .mode-btn .label{font-size:0.65rem;letter-spacing:1px;text-transform:uppercase;line-height:1.3}
-  .mode-btn.bourre{--c:var(--orange)}.mode-btn.nomad{--c:var(--green)}.mode-btn.wife{--c:var(--pink)}.mode-btn.survival{--c:var(--blue)}
-  .mode-btn.active{border-color:var(--c);background:linear-gradient(135deg,transparent,color-mix(in srgb,var(--c) 15%,transparent));color:var(--c)}
-  .mode-btn.active .emoji{filter:drop-shadow(0 0 8px var(--c))}
-  .main{max-width:900px;margin:0 auto;padding:0 1rem 4rem}
-  .panel{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:1.5rem;margin-bottom:1rem;display:none;animation:fadeIn 0.3s ease}
-  .panel.visible{display:block}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-  .panel-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;margin-bottom:1rem}
-  .orange .panel-title{color:var(--orange)}.greenp .panel-title{color:var(--green)}.pinkp .panel-title{color:var(--pink)}.bluep .panel-title{color:var(--blue)}
-  .expenses-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem}
-  @media(min-width:600px){.expenses-grid{grid-template-columns:repeat(3,1fr)}}
-  .expense-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.75rem}
-  .expense-card .cat{font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.2rem}
-  .expense-card .amount{font-family:'Teko',sans-serif;font-size:1.4rem;font-weight:600}
-  .expense-card .desc{font-size:0.6rem;color:var(--text2);margin-top:0.2rem;line-height:1.4}
-  .expense-card .warn{font-size:0.55rem;color:var(--orange);margin-top:0.3rem}
-  .orange .expense-card .amount{color:var(--orange)}.greenp .expense-card .amount{color:var(--green)}.pinkp .expense-card .amount{color:var(--pink)}
-  .total-bar{display:flex;justify-content:space-between;align-items:center;margin-top:1rem;padding:1rem;background:var(--bg4);border-radius:8px;border:1px solid var(--border2)}
-  .total-label{font-size:0.7rem;color:var(--text2);text-transform:uppercase;letter-spacing:2px}
-  .total-amount{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:2px}
-  .disclaimer{font-size:0.6rem;color:var(--text3);margin-top:0.5rem;font-style:italic;line-height:1.5}
-  .input-group{margin-bottom:1.25rem}
-  .input-label{font-size:0.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:2px;margin-bottom:0.5rem;display:flex;justify-content:space-between;align-items:center}
-  .input-label span{font-size:1rem;color:var(--blue);font-family:'Teko',sans-serif;font-weight:600}
-  input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:4px;background:var(--bg4);border-radius:2px;outline:none;cursor:pointer}
-  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--blue);cursor:pointer;box-shadow:0 0 10px var(--blue)}
-  .style-select{display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-top:0.5rem}
-  .style-opt{padding:0.6rem;border:1px solid var(--border2);border-radius:6px;cursor:pointer;text-align:center;font-size:0.6rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;transition:all 0.2s;background:var(--bg3)}
-  .style-opt .se{font-size:1.2rem;display:block;margin-bottom:0.2rem}
-  .style-opt:hover{border-color:var(--blue);color:var(--text)}
-  .style-opt.sel{border-color:var(--blue);color:var(--blue);background:var(--bluedim)}
-  .btn{display:block;width:100%;padding:1rem;border:1px solid var(--blue);background:linear-gradient(135deg,var(--bluedim),transparent);border-radius:8px;color:var(--blue);font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:3px;cursor:pointer;transition:all 0.2s;margin-top:1.25rem}
-  .btn:hover{background:var(--bluedim);transform:translateY(-1px);box-shadow:0 0 20px rgba(0,212,255,0.2)}
-  .result-zone{display:none;margin-top:1.5rem;animation:fadeIn 0.5s ease}
-  .result-zone.show{display:block}
-  .result-big{text-align:center;padding:2rem 1rem;background:var(--bg3);border-radius:12px;border:1px solid var(--border2);margin-bottom:1rem;position:relative;overflow:hidden}
-  .result-big::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--orange),var(--yellow),var(--green))}
-  .result-months{font-family:'Bebas Neue',sans-serif;font-size:clamp(4rem,15vw,8rem);line-height:1;letter-spacing:4px}
-  .result-label{font-size:0.7rem;color:var(--text2);text-transform:uppercase;letter-spacing:3px;margin-top:0.25rem}
-  .result-msg{font-size:0.9rem;margin-top:1rem;padding:0.75rem;background:var(--bg4);border-radius:6px;border-left:3px solid currentColor;line-height:1.6}
-  .bar-container{margin:1rem 0}
-  .bar-track{height:20px;background:var(--bg4);border-radius:10px;overflow:hidden;border:1px solid var(--border)}
-  .bar-fill{height:100%;border-radius:10px;transition:width 1s ease}
-  .breakdown{background:var(--bg3);border-radius:8px;border:1px solid var(--border);padding:1rem;margin-top:0.75rem}
-  .breakdown-title{font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:2px;margin-bottom:0.75rem}
-  .breakdown-row{display:flex;justify-content:space-between;align-items:center;padding:0.4rem 0;border-bottom:1px solid var(--border);font-size:0.7rem}
-  .breakdown-row:last-child{border:none}
-  .breakdown-row .bcat{color:var(--text2)}
-  .breakdown-row .bamt{font-family:'Teko',sans-serif;font-size:0.9rem}
-  .reset-btn{display:block;width:100%;padding:0.75rem;border:1px solid var(--border2);background:transparent;border-radius:8px;color:var(--text3);font-family:'Space Mono',monospace;font-size:0.7rem;cursor:pointer;transition:all 0.2s;margin-top:0.75rem;text-transform:uppercase;letter-spacing:2px}
-  .reset-btn:hover{border-color:var(--text2);color:var(--text)}
-  .blink{animation:blink 1s step-end infinite}
-  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-  footer{text-align:center;padding:2rem;font-size:0.6rem;color:var(--text3);letter-spacing:2px}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#08080f;--bg2:#0f0f1c;--bg3:#14141f;--bg4:#1a1a2a;
+  --text:#e8e8f0;--text2:#8888aa;--text3:#555577;
+  --orange:#ff6b00;--orangedim:#ff6b0020;
+  --green:#00ff88;--greendim:#00ff8820;
+  --pink:#ff2d7a;--pinkdim:#ff2d7a20;
+  --blue:#00d4ff;--bluedim:#00d4ff20;
+  --red:#ff2020;--yellow:#ffd600;
+  --border:#ffffff0f;--border2:#ffffff1a;
+}
+body{background:var(--bg);color:var(--text);font-family:'Space Mono',monospace;min-height:100vh;overflow-x:hidden}
+#scanlines{position:fixed;inset:0;pointer-events:none;z-index:100;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px)}
+
+.go-overlay{display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.93);align-items:center;justify-content:center;padding:1rem}
+.go-overlay.show{display:flex;animation:fadeIn 0.4s ease}
+.go-box{border:2px solid var(--go-color,var(--red));border-radius:16px;padding:2rem;max-width:520px;width:100%;text-align:center;box-shadow:0 0 60px color-mix(in srgb,var(--go-color,var(--red)) 40%,transparent);animation:shake 0.5s ease;background:#080510}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.go-gameover{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,8vw,4rem);letter-spacing:6px;color:var(--go-color,var(--red));line-height:1;text-shadow:0 0 30px color-mix(in srgb,var(--go-color,var(--red)) 60%,transparent)}
+.go-reason{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.1rem,4vw,1.8rem);letter-spacing:3px;color:var(--go-color,var(--red));opacity:0.85;margin-top:0.2rem;margin-bottom:0.75rem;line-height:1.2}
+.go-emoji{font-size:2.5rem;display:block;margin:0.75rem 0}
+.go-story{font-size:0.76rem;line-height:1.9;color:var(--text);background:var(--bg3);border-radius:8px;padding:1rem;border:1px solid var(--border2);text-align:left;margin-bottom:1rem}
+.go-story strong{color:var(--go-color,var(--red))}
+.go-loss{font-family:'Teko',sans-serif;font-size:1.7rem;color:var(--go-color,var(--red));margin-bottom:1rem;letter-spacing:2px}
+.go-btn{display:block;width:100%;padding:0.85rem;border:1px solid var(--text3);background:transparent;border-radius:8px;color:var(--text2);font-family:'Space Mono',monospace;font-size:0.62rem;cursor:pointer;text-transform:uppercase;letter-spacing:2px;transition:all 0.2s}
+.go-btn:hover{border-color:var(--text);color:var(--text)}
+
+header{text-align:center;padding:2rem 1rem 0.5rem}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.8rem,10vw,6.5rem);letter-spacing:5px;background:linear-gradient(135deg,var(--orange),var(--yellow),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 40px rgba(255,107,0,0.4));line-height:1}
+.logo-sub{font-family:'Bebas Neue',sans-serif;font-size:clamp(0.9rem,2.5vw,1.5rem);letter-spacing:10px;color:var(--text3);margin-top:0.2rem}
+.tagline{font-size:0.6rem;color:var(--text3);letter-spacing:3px;text-transform:uppercase;margin-top:0.4rem}
+.badge{display:inline-block;font-size:0.5rem;background:var(--orangedim);border:1px solid var(--orange);color:var(--orange);padding:3px 10px;border-radius:4px;letter-spacing:2px;margin-top:0.5rem}
+
+.modes{display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem;padding:1rem;max-width:920px;margin:0 auto}
+@media(min-width:640px){.modes{grid-template-columns:repeat(4,1fr)}}
+.mode-btn{padding:1rem 0.5rem;border:1px solid var(--border2);background:var(--bg3);border-radius:10px;cursor:pointer;transition:all 0.2s;text-align:center;font-family:'Space Mono',monospace;color:var(--text2)}
+.mode-btn:hover{transform:translateY(-3px)}
+.mode-btn .moji{font-size:2rem;display:block;margin-bottom:0.3rem}
+.mode-btn .mlabel{font-size:0.58rem;letter-spacing:1px;text-transform:uppercase;line-height:1.4}
+.mode-btn.mao{--c:var(--orange)}.mode-btn.nomad{--c:var(--green)}.mode-btn.issan{--c:var(--pink)}.mode-btn.sim{--c:var(--blue)}
+.mode-btn.active{border-color:var(--c);background:linear-gradient(135deg,transparent,color-mix(in srgb,var(--c) 12%,transparent));color:var(--c)}
+.mode-btn.active .moji{filter:drop-shadow(0 0 10px var(--c))}
+
+.main{max-width:920px;margin:0 auto;padding:0 1rem 4rem}
+.panel{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:1.5rem;margin-bottom:1rem;display:none;animation:fadeIn 0.3s ease}
+.panel.visible{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.ptitle{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;letter-spacing:2px;margin-bottom:1.25rem}
+.orange .ptitle{color:var(--orange)}.greenp .ptitle{color:var(--green)}.pinkp .ptitle{color:var(--pink)}.bluep .ptitle{color:var(--blue)}
+
+.egrid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem}
+@media(min-width:580px){.egrid{grid-template-columns:repeat(3,1fr)}}
+.ecard{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.75rem}
+.ecard.special{border-color:var(--pink);animation:pulseborder 2s ease-in-out infinite}
+@keyframes pulseborder{0%,100%{box-shadow:0 0 0 rgba(255,45,122,0)}50%{box-shadow:0 0 12px rgba(255,45,122,0.3)}}
+.ecat{font-size:0.55rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.2rem}
+.eamt{font-family:'Teko',sans-serif;font-size:1.5rem;font-weight:600}
+.edesc{font-size:0.58rem;color:var(--text2);margin-top:0.2rem;line-height:1.4}
+.ewarn{font-size:0.52rem;color:var(--orange);margin-top:0.3rem}
+.especial{font-size:0.52rem;color:var(--pink);margin-top:0.3rem;font-weight:700}
+.orange .eamt{color:var(--orange)}.greenp .eamt{color:var(--green)}.pinkp .eamt{color:var(--pink)}
+.buffalo-badge{display:inline-block;background:var(--pinkdim);border:1px solid var(--pink);color:var(--pink);font-size:0.5rem;padding:2px 6px;border-radius:4px;letter-spacing:1px;margin-top:0.4rem}
+
+.total-bar{display:flex;justify-content:space-between;align-items:center;margin-top:1rem;padding:1rem;background:var(--bg4);border-radius:8px;border:1px solid var(--border2)}
+.tlabel{font-size:0.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:2px}
+.tamt{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:2px}
+.disc{font-size:0.58rem;color:var(--text3);margin-top:0.4rem;font-style:italic;line-height:1.5}
+
+.sim-section{margin-bottom:1.5rem}
+.sim-label{font-size:0.6rem;color:var(--text2);text-transform:uppercase;letter-spacing:2px;margin-bottom:0.6rem;display:flex;justify-content:space-between;align-items:center}
+.sim-label .val{font-size:1.1rem;color:var(--blue);font-family:'Teko',sans-serif;font-weight:700;letter-spacing:1px}
+input[type=range]{width:100%;-webkit-appearance:none;height:5px;background:var(--bg4);border-radius:3px;outline:none;cursor:pointer;border:1px solid var(--border2)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--blue);cursor:pointer;box-shadow:0 0 12px rgba(0,212,255,0.5)}
+.range-hints{display:flex;justify-content:space-between;font-size:0.5rem;color:var(--text3);margin-top:5px}
+.style-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-top:0.6rem}
+.sopt{padding:0.75rem 0.5rem;border:1px solid var(--border2);border-radius:8px;cursor:pointer;text-align:center;font-size:0.58rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;transition:all 0.2s;background:var(--bg3)}
+.sopt .se{font-size:1.4rem;display:block;margin-bottom:0.3rem}
+.sopt:hover{border-color:var(--blue);color:var(--text)}
+.sopt.sel{border-color:var(--blue);color:var(--blue);background:var(--bluedim)}
+.live-preview{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1rem;margin:1rem 0}
+.lp-title{font-size:0.55rem;color:var(--text3);text-transform:uppercase;letter-spacing:2px;margin-bottom:0.75rem}
+.lp-row{display:flex;justify-content:space-between;align-items:center;padding:0.35rem 0;border-bottom:1px solid var(--border);font-size:0.65rem}
+.lp-row:last-child{border:none}
+.lp-cat{color:var(--text2)}
+.lp-bar-wrap{flex:1;margin:0 10px;height:3px;background:var(--bg4);border-radius:2px;overflow:hidden}
+.lp-bar-inner{height:100%;border-radius:2px;transition:width 0.4s ease}
+.lp-total-row{display:flex;justify-content:space-between;font-size:0.7rem;margin-top:0.5rem;padding-top:0.5rem;border-top:1px solid var(--border2)}
+.lp-total-label{color:var(--text2);text-transform:uppercase;letter-spacing:2px}
+.lp-total-val{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px}
+.buffalo-alert{background:linear-gradient(135deg,#1a0a14,#200a1a);border:1px solid var(--pink);border-radius:8px;padding:0.75rem;margin-top:0.75rem;font-size:0.62rem;line-height:1.6;animation:pulseborder 2s infinite}
+.buffalo-alert strong{color:var(--pink);font-size:0.75rem}
+.calc-btn{display:block;width:100%;padding:1.1rem;border:1px solid var(--blue);background:linear-gradient(135deg,var(--bluedim),transparent);border-radius:10px;color:var(--blue);font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:4px;cursor:pointer;transition:all 0.2s;margin-top:1rem}
+.calc-btn:hover{background:var(--bluedim);transform:translateY(-2px);box-shadow:0 0 25px rgba(0,212,255,0.2)}
+.result-zone{display:none;margin-top:1.5rem;animation:fadeIn 0.5s ease}
+.result-zone.show{display:block}
+.result-hero{text-align:center;padding:2rem 1rem 1.5rem;background:var(--bg3);border-radius:14px;border:1px solid var(--border2);margin-bottom:1rem;position:relative;overflow:hidden}
+.result-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--orange),var(--yellow),var(--green),var(--blue),var(--pink))}
+.rh-pre{font-size:0.58rem;color:var(--text2);text-transform:uppercase;letter-spacing:4px;margin-bottom:0.75rem}
+.rh-big-line{display:flex;align-items:baseline;justify-content:center;gap:0.4rem;flex-wrap:wrap}
+.rh-months{font-family:'Bebas Neue',sans-serif;font-size:clamp(4rem,18vw,9rem);line-height:1;letter-spacing:4px;transition:color 0.5s}
+.rh-mois-label{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,7vw,4rem);letter-spacing:3px;line-height:1;opacity:0.85}
+.rh-days{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.3rem,4vw,2rem);letter-spacing:3px;color:var(--text2);margin-top:0.2rem}
+.rh-label{font-size:0.6rem;color:var(--text2);text-transform:uppercase;letter-spacing:4px;margin-top:0.5rem}
+.rh-punch{font-size:clamp(0.8rem,2.5vw,1rem);margin-top:1.25rem;padding:0.9rem 1.2rem;background:var(--bg4);border-radius:8px;border-left:4px solid currentColor;line-height:1.7;font-style:italic;text-align:left}
+.status-bar-wrap{margin:1rem 0}
+.sb-meta{display:flex;justify-content:space-between;font-size:0.58rem;color:var(--text3);margin-bottom:6px}
+.sb-track{height:22px;background:var(--bg4);border-radius:11px;overflow:hidden;border:1px solid var(--border)}
+.sb-fill{height:100%;border-radius:11px;transition:width 1.2s cubic-bezier(.22,.68,0,1.2)}
+.res-breakdown{background:var(--bg3);border-radius:10px;border:1px solid var(--border);padding:1.1rem;margin-top:0.75rem}
+.rb-title{font-size:0.55rem;color:var(--text3);text-transform:uppercase;letter-spacing:2px;margin-bottom:0.75rem}
+.rb-row{display:flex;justify-content:space-between;align-items:center;padding:0.4rem 0;border-bottom:1px solid var(--border);font-size:0.65rem}
+.rb-row:last-child{border:none}
+.rb-cat{color:var(--text2)}
+.rb-amt{font-family:'Teko',sans-serif;font-size:0.95rem}
+.rb-pct{font-size:0.5rem;color:var(--text3);margin-left:6px}
+.inflation-note{font-size:0.55rem;color:var(--text3);font-style:italic;margin-top:0.5rem;padding:0.5rem;border:1px solid var(--border);border-radius:6px;line-height:1.6}
+.reset-btn{display:block;width:100%;padding:0.8rem;border:1px solid var(--border2);background:transparent;border-radius:8px;color:var(--text3);font-family:'Space Mono',monospace;font-size:0.65rem;cursor:pointer;transition:all 0.2s;margin-top:0.75rem;text-transform:uppercase;letter-spacing:2px}
+.reset-btn:hover{border-color:var(--text2);color:var(--text)}
+.blink{animation:blink 1s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+footer{text-align:center;padding:2rem 1rem;font-size:0.55rem;color:var(--text3);letter-spacing:2px;line-height:2}
 </style>
 </head>
 <body>
 <div id="scanlines"></div>
 
+<div class="go-overlay" id="go-overlay">
+  <div class="go-box" id="go-box">
+    <div class="go-gameover">GAME OVER</div>
+    <div class="go-reason" id="go-reason">RAISON</div>
+    <span class="go-emoji" id="go-emoji">💀</span>
+    <div class="go-story" id="go-story"></div>
+    <div class="go-loss" id="go-loss"></div>
+    <button class="go-btn" onclick="closeGameOver()">😭 Fermer et accepter ma ruine</button>
+  </div>
+</div>
+
 <header>
-  <div class="logo">🐦 Farang Kee Nok</div>
+  <div class="logo">Farang Kee Nok</div>
   <div class="logo-sub">S I M U L A T O R</div>
   <div class="tagline">ฝรั่งขี้นก — Pour les cheap Charlies au pays du sourire 🇹🇭</div>
   <div class="badge">⚡ Combien de temps avant la débâcle totale ? ⚡</div>
 </header>
 
 <div class="modes">
-  <button class="mode-btn bourre" onclick="setMode('bourre')"><span class="emoji">🍺</span><span class="label">Farang<br>Bourré</span></button>
-  <button class="mode-btn nomad" onclick="setMode('nomad')"><span class="emoji">💻</span><span class="label">Digital Nomad<br>Broke</span></button>
-  <button class="mode-btn wife" onclick="setMode('wife')"><span class="emoji">👰‍♀️</span><span class="label">Thaï Wife +<br>Belle Famille</span></button>
-  <button class="mode-btn survival" onclick="setMode('survival')"><span class="emoji">⏳</span><span class="label">Simulateur<br>Survie</span></button>
+  <button class="mode-btn mao" onclick="setMode('mao')"><span class="moji">🍺</span><span class="mlabel">Farang<br>Kee Mao</span></button>
+  <button class="mode-btn nomad" onclick="setMode('nomad')"><span class="moji">💻</span><span class="mlabel">Digital Nomad<br>Broke</span></button>
+  <button class="mode-btn issan" onclick="setMode('issan')"><span class="moji">👰‍♀️</span><span class="mlabel">Issan<br>Girlfriend</span></button>
+  <button class="mode-btn sim" onclick="setMode('sim')"><span class="moji">⏳</span><span class="mlabel">Simulateur<br>Survie</span></button>
 </div>
 
 <div class="main">
 
-  <div id="panel-bourre" class="panel orange">
-    <div class="panel-title">🍺 Farang Bourré — Estimation Mensuelle</div>
-    <div class="expenses-grid">
-      <div class="expense-card"><div class="cat">Logement</div><div class="amount">15 000 ฿</div><div class="desc">Studio Bangla Road / Walking Street. Bruit inclus, voisins douteux.</div></div>
-      <div class="expense-card"><div class="cat">Alcool / Bières</div><div class="amount">18 000 ฿</div><div class="desc">Chang, Leo, buckets... les soirées commencent à 16h.</div><div class="warn">⚠ estimation basse</div></div>
-      <div class="expense-card"><div class="cat">Go-Go Bars</div><div class="amount">12 000 ฿</div><div class="desc">Lady drinks, bar fines, "cadeaux" divers.</div></div>
-      <div class="expense-card"><div class="cat">Bouffe</div><div class="amount">6 000 ฿</div><div class="desc">Street food + kebab 4h du mat pour éponger.</div></div>
-      <div class="expense-card"><div class="cat">Transport</div><div class="amount">3 000 ฿</div><div class="desc">Tuk-tuk, taxi, scooter loué que tu vas bousiller.</div></div>
-      <div class="expense-card"><div class="cat">Imprévus 💀</div><div class="amount">8 000 ฿</div><div class="desc">Amendes, hôpital, téléphone perdu, vêtements déchirés.</div><div class="warn">⚠ toujours là</div></div>
+  <div id="panel-mao" class="panel orange">
+    <div class="ptitle">🍺 Farang Kee Mao — Budget Mensuel</div>
+    <div class="egrid">
+      <div class="ecard"><div class="ecat">Logement zone chaude</div><div class="eamt">15 000 ฿</div><div class="edesc">Studio Bangla Road / Walking Street. Bruit inclus, voisins louches.</div></div>
+      <div class="ecard"><div class="ecat">Alcool & bières</div><div class="eamt">18 000 ฿</div><div class="edesc">Chang, Leo, buckets, shots. Les soirées commencent à 16h.</div><div class="ewarn">⚠ estimation basse</div></div>
+      <div class="ecard"><div class="ecat">Go-Go bars & lady drinks</div><div class="eamt">12 000 ฿</div><div class="edesc">Lady drinks, bar fines, cadeaux spontanés.</div></div>
+      <div class="ecard"><div class="ecat">Bouffe</div><div class="eamt">6 000 ฿</div><div class="edesc">Street food + kebab 4h du mat pour éponger la soirée.</div></div>
+      <div class="ecard"><div class="ecat">Transport</div><div class="eamt">3 000 ฿</div><div class="edesc">Tuk-tuk, taxi, scooter loué que tu vas bousiller.</div></div>
+      <div class="ecard"><div class="ecat">Imprévus 💀</div><div class="eamt">8 000 ฿</div><div class="edesc">Amendes, hôpital, téléphone perdu, fierté endommagée.</div><div class="ewarn">⚠ toujours là</div></div>
     </div>
-    <div class="total-bar">
-      <div><div class="total-label">Total mensuel estimé</div><div class="disclaimer">hors visa, vols, et accidents diplomatiques</div></div>
-      <div class="total-amount" style="color:var(--orange)">62 000 ฿</div>
-    </div>
-    <div class="disclaimer">≈ 1 650 EUR/mois • Peut exploser x3 un samedi soir de Songkran</div>
+    <div class="total-bar"><div><div class="tlabel">Total mensuel estimé</div><div class="disc">hors visa, incidents diplomatiques et nuits blanches</div></div><div class="tamt" style="color:var(--orange)">62 000 ฿</div></div>
+    <div class="disc">≈ 1 650 EUR/mois • Peut exploser ×3 pendant Songkran</div>
   </div>
 
   <div id="panel-nomad" class="panel greenp">
-    <div class="panel-title">💻 Digital Nomad Broke — Budget Réaliste</div>
-    <div class="expenses-grid">
-      <div class="expense-card"><div class="cat">Chambre / Airbnb</div><div class="amount">7 500 ฿</div><div class="desc">Chiang Mai / Chaweng. Clim capricieuse. Wifi "jusqu'à 10 Mbps".</div></div>
-      <div class="expense-card"><div class="cat">Coworking</div><div class="amount">2 500 ฿</div><div class="desc">CAMP, Yellow, Hub53... ou un café avec prise électrique.</div></div>
-      <div class="expense-card"><div class="cat">Street Food</div><div class="amount">4 500 ฿</div><div class="desc">Pad Thai, khao man gai, fruit shakes. Tu as trouvé la paix.</div></div>
-      <div class="expense-card"><div class="cat">Scooter pourri</div><div class="amount">2 000 ฿</div><div class="desc">Honda Click 2009, location mois. La chaîne claque mais ça roule.</div></div>
-      <div class="expense-card"><div class="cat">Visa Run</div><div class="amount">1 500 ฿</div><div class="desc">Bus Poi Pet / Mae Sai. 1 fois/mois si tu joues à l'économique.</div></div>
-      <div class="expense-card"><div class="cat">Café + Extras</div><div class="amount">3 000 ฿</div><div class="desc">Oat latte, Netflix, kit urgence ibuprofen + Imodium.</div></div>
+    <div class="ptitle">💻 Digital Nomad Broke — Budget Serré</div>
+    <div class="egrid">
+      <div class="ecard"><div class="ecat">Chambre / Airbnb</div><div class="eamt">7 500 ฿</div><div class="edesc">Chiang Mai, Chaweng, Pai. Clim capricieuse. Wifi "up to 10 Mbps".</div></div>
+      <div class="ecard"><div class="ecat">Coworking + café</div><div class="eamt">5 500 ฿</div><div class="edesc">CAMP, Yellow, Hub53... ou juste un café avec prise électrique.</div></div>
+      <div class="ecard"><div class="ecat">Street food</div><div class="eamt">4 500 ฿</div><div class="edesc">Pad Thai, khao man gai, fruit shakes. La paix intérieure pour 60 ฿.</div></div>
+      <div class="ecard"><div class="ecat">Scooter pourri</div><div class="eamt">2 000 ฿</div><div class="edesc">Honda Click 2009, loc mensuelle. La chaîne claque mais ça roule.</div></div>
+      <div class="ecard"><div class="ecat">Visa run</div><div class="eamt">1 500 ฿</div><div class="edesc">Bus Poi Pet / Mae Sai. 1 fois par mois si tu joues à l'économique.</div></div>
+      <div class="ecard"><div class="ecat">Extras & urgences</div><div class="eamt">3 000 ฿</div><div class="edesc">Oat latte, Netflix, SIM data, kit Ibuprofen + Imodium.</div></div>
     </div>
-    <div class="total-bar">
-      <div><div class="total-label">Total mensuel estimé</div><div class="disclaimer">hors billets d'avion et crise existentielle</div></div>
-      <div class="total-amount" style="color:var(--green)">21 000 ฿</div>
-    </div>
-    <div class="disclaimer">≈ 560 EUR/mois • Viable si tu gagnes au moins 1 200€/mois et que tu te mens à toi-même</div>
+    <div class="total-bar"><div><div class="tlabel">Total mensuel estimé</div><div class="disc">hors billet retour et crise existentielle</div></div><div class="tamt" style="color:var(--green)">24 000 ฿</div></div>
+    <div class="disc">≈ 640 EUR/mois • Viable si tu gagnes +1 200€ et que tu te mens à toi-même</div>
   </div>
 
-  <div id="panel-wife" class="panel pinkp">
-    <div class="panel-title">👰‍♀️ Thaï Wife + Belle Famille — La Vraie Vie</div>
-    <div class="expenses-grid">
-      <div class="expense-card"><div class="cat">Maison / Loyer</div><div class="amount">12 000 ฿</div><div class="desc">Maison 2 chambres. Chambre 3 pour la belle-mère (version hard : incluse).</div></div>
-      <div class="expense-card"><div class="cat">Nourriture famille</div><div class="amount">9 000 ฿</div><div class="desc">Tu nourris 2 adultes + potentiellement belle-mère + tante.</div><div class="warn">version hard : +4 000 ฿</div></div>
-      <div class="expense-card"><div class="cat">Sin Sod / Famille</div><div class="amount">5 000 ฿</div><div class="desc">Virement mensuel aux parents. C'est culturel. Tu avais accepté.</div></div>
-      <div class="expense-card"><div class="cat">École enfant(s)</div><div class="amount">6 000 ฿</div><div class="desc">École privée thai, uniformes, activités. Tu veux le meilleur, non ?</div></div>
-      <div class="expense-card"><div class="cat">Fêtes de village</div><div class="amount">3 000 ฿</div><div class="desc">Mariage cousin, ordination neveu, anniversaire grand-mère #2.</div></div>
-      <div class="expense-card"><div class="cat">Cadeaux + Surprises</div><div class="amount">4 000 ฿</div><div class="desc">Sac femme, téléphone belle-mère, moteur scooter beau-frère.</div><div class="warn">⚠ "juste une fois"</div></div>
+  <div id="panel-issan" class="panel pinkp">
+    <div class="ptitle">👰‍♀️ Issan Girlfriend — La Vraie Vie</div>
+    <div class="egrid">
+      <div class="ecard"><div class="ecat">Maison / Loyer</div><div class="eamt">12 000 ฿</div><div class="edesc">Maison 2-3 chambres. La 3ème est officiellement "pour les invités".</div></div>
+      <div class="ecard"><div class="ecat">Nourriture famille</div><div class="eamt">9 000 ฿</div><div class="edesc">Tu nourris 2 adultes + belle-mère + tante + le chien de la belle-mère.</div><div class="ewarn">version hard : +4 000 ฿</div></div>
+      <div class="ecard"><div class="ecat">Sin sod / famille</div><div class="eamt">5 000 ฿</div><div class="edesc">Virement mensuel aux parents. C'est culturel. Tu avais dit oui.</div></div>
+      <div class="ecard"><div class="ecat">École enfant(s)</div><div class="eamt">6 000 ฿</div><div class="edesc">Privée, uniforme, activités, livres. Tu veux le meilleur, non ?</div></div>
+      <div class="ecard"><div class="ecat">Fêtes de village</div><div class="eamt">3 000 ฿</div><div class="edesc">Mariage cousin, ordination neveu, anniversaire grand-mère #2.</div></div>
+      <div class="ecard"><div class="ecat">Cadeaux & surprises</div><div class="eamt">4 000 ฿</div><div class="edesc">Sac, téléphone belle-mère, moteur scooter beau-frère.</div><div class="ewarn">⚠ "juste une fois" chaque semaine</div></div>
+      <div class="ecard special"><div class="ecat">🐃 Le buffle malade</div><div class="eamt" style="color:var(--pink)">~50 000 ฿</div><div class="edesc">LE classique. Le buffle de la belle-famille est malade. Vétérinaire urgent. Sinon il meurt. Tu paies.</div><div class="especial">⚡ Probabilité : ~30% par trimestre</div><div class="buffalo-badge">DÉPENSE SURPRISE™</div></div>
     </div>
-    <div class="total-bar">
-      <div><div class="total-label">Total mensuel estimé</div><div class="disclaimer">version soft — hors rénovation maison des parents</div></div>
-      <div class="total-amount" style="color:var(--pink)">39 000 ฿</div>
-    </div>
-    <div class="disclaimer">≈ 1 040 EUR/mois soft / 1 450 EUR hard (belle-mère intégrée) • +sin sod initial 200 000–500 000 ฿</div>
+    <div class="total-bar"><div><div class="tlabel">Total mensuel (hors buffle)</div><div class="disc">version soft — hors rénovation maison des parents</div></div><div class="tamt" style="color:var(--pink)">39 000 ฿</div></div>
+    <div class="disc">≈ 1 040 EUR/mois soft • +sin sod initial 200 000–500 000 ฿</div>
   </div>
 
-  <div id="panel-survival" class="panel bluep">
-    <div class="panel-title">⏳ Simulateur de Survie</div>
-    <div class="input-group">
-      <div class="input-label">Budget mensuel disponible <span id="budget-display">40 000 ฿</span></div>
-      <input type="range" min="10000" max="200000" step="1000" value="40000" id="budget-range" oninput="updateBudget(this.value)">
-      <div style="display:flex;justify-content:space-between;font-size:0.55rem;color:var(--text3);margin-top:4px"><span>10 000 ฿ (galère)</span><span>200 000 ฿ (flexer)</span></div>
+  <div id="panel-sim" class="panel bluep">
+    <div class="ptitle">⏳ Simulateur de Survie</div>
+    <div class="sim-section">
+      <div class="sim-label">Budget mensuel disponible <span class="val" id="budget-val">40 000 ฿ ≈ 1 065 €</span></div>
+      <input type="range" min="10000" max="200000" step="1000" value="40000" id="budget-range" oninput="onBudgetChange(this.value)">
+      <div class="range-hints"><span>10 000 ฿ — pure galère</span><span>200 000 ฿ — flexer en tongs</span></div>
     </div>
-    <div class="input-group">
-      <div class="input-label" style="margin-bottom:0.5rem">Ton style de vie</div>
-      <div class="style-select">
-        <div class="style-opt" id="s-bourre" onclick="selectStyle('bourre')"><span class="se">🍺</span>Farang Bourré</div>
-        <div class="style-opt sel" id="s-nomad" onclick="selectStyle('nomad')"><span class="se">💻</span>Nomad Broke</div>
-        <div class="style-opt" id="s-wife" onclick="selectStyle('wife')"><span class="se">👰‍♀️</span>Thaï Wife</div>
+    <div class="sim-section">
+      <div class="sim-label" style="margin-bottom:0.5rem">Ton style de vie</div>
+      <div class="style-grid">
+        <div class="sopt" id="s-mao" onclick="selectStyle('mao')"><span class="se">🍺</span>Farang Kee Mao</div>
+        <div class="sopt sel" id="s-nomad" onclick="selectStyle('nomad')"><span class="se">💻</span>Nomad Broke</div>
+        <div class="sopt" id="s-issan" onclick="selectStyle('issan')"><span class="se">👰‍♀️</span>Issan GF</div>
       </div>
     </div>
-    <button class="btn" onclick="simulate()">🧮 Calculer ma survie ↗</button>
+    <div class="live-preview">
+      <div class="lp-title">📊 Dépenses calculées en temps réel (lifestyle inflation activée)</div>
+      <div id="lp-rows"></div>
+      <div class="lp-total-row">
+        <span class="lp-total-label">Total mensuel estimé</span>
+        <span class="lp-total-val" id="lp-total" style="color:var(--blue)">—</span>
+      </div>
+    </div>
+    <div id="buffalo-alert-zone"></div>
+    <button class="calc-btn" onclick="simulate()">💀 CALCULER MA SURVIE 💀</button>
     <div id="result-zone" class="result-zone">
-      <div class="result-big">
-        <div style="font-size:0.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:3px;margin-bottom:0.5rem">Tu vas tenir environ</div>
-        <div class="result-months" id="result-months" style="color:var(--green)">6</div>
-        <div class="result-label">mois avant de craquer 💀</div>
-        <div class="result-msg" id="result-msg" style="color:var(--green)">Tout va bien king 👑</div>
+      <div class="result-hero">
+        <div class="rh-pre">⏳ Tu vas tenir environ</div>
+        <div class="rh-big-line">
+          <div class="rh-months" id="rh-months">—</div>
+          <div class="rh-mois-label" id="rh-mois-label" style="color:var(--green)">mois</div>
+        </div>
+        <div class="rh-days" id="rh-days">— jours</div>
+        <div class="rh-label">avant de craquer et de rentrer en France 🛫</div>
+        <div class="rh-punch" id="rh-punch" style="color:var(--green)">...</div>
       </div>
-      <div class="bar-container">
-        <div style="display:flex;justify-content:space-between;font-size:0.6rem;color:var(--text3);margin-bottom:6px"><span>Situation financière</span><span id="bar-label" style="color:var(--green)">Ça roule</span></div>
-        <div class="bar-track"><div class="bar-fill" id="bar-fill" style="width:75%;background:linear-gradient(90deg,var(--green),var(--yellow))"></div></div>
+      <div class="status-bar-wrap">
+        <div class="sb-meta"><span>Niveau de survie</span><span id="sb-label">—</span></div>
+        <div class="sb-track"><div class="sb-fill" id="sb-fill" style="width:0%"></div></div>
       </div>
-      <div class="breakdown">
-        <div class="breakdown-title">📊 Détail des dépenses estimées / mois</div>
-        <div id="breakdown-rows"></div>
-        <div class="breakdown-row"><span class="bcat" style="color:var(--text)">TOTAL MENSUEL</span><span class="bamt" id="total-monthly" style="color:var(--text);font-size:1.1rem"></span></div>
+      <div class="res-breakdown">
+        <div class="rb-title">💸 Détail du budget mensuel calculé</div>
+        <div id="rb-rows"></div>
+        <div class="inflation-note" id="inflation-note"></div>
       </div>
       <button class="reset-btn" onclick="resetSim()">🔄 Relancer une simulation</button>
     </div>
   </div>
-
 </div>
 
 <footer>
-  Farang Kee Nok Simulator — ฝรั่งขี้นก — Pour les cheap Charlies au pays du sourire<br>
-  <span class="blink">■</span> Données basées sur la réalité thaïlandaise 2024-2025 — Résultats non garantis par le gouvernement thaïlandais <span class="blink">■</span>
+  Farang Kee Nok Simulator — ฝรั่งขี้นก<br>
+  Pour les cheap Charlies au pays du sourire 🇹🇭<br>
+  <span class="blink">■</span> Données 2024-2025 — Aucun buffle n'a été blessé dans la création de ce simulateur <span class="blink">■</span>
 </footer>
 
 <script>
-let currentMode=null,selectedStyle='nomad',budgetVal=40000;
-const costs={
-  bourre:{items:[{cat:'Logement (zone chaude)',amt:15000},{cat:'Alcool & bières',amt:18000},{cat:'Go-Go bars & lady drinks',amt:12000},{cat:'Bouffe',amt:6000},{cat:'Transport',amt:3000},{cat:'Imprévus / amendes / hôpital',amt:8000}],total:62000},
-  nomad:{items:[{cat:'Chambre / Airbnb',amt:7500},{cat:'Coworking + café',amt:5500},{cat:'Street food',amt:4500},{cat:'Scooter + transport',amt:2000},{cat:'Visa run',amt:1500},{cat:'Extras & urgences',amt:3000}],total:24000},
-  wife:{items:[{cat:'Maison (2-3 chambres)',amt:12000},{cat:'Nourriture famille',amt:9000},{cat:'Sin sod mensuel famille',amt:5000},{cat:"École enfant(s)",amt:6000},{cat:'Fêtes de village',amt:3000},{cat:'Cadeaux & surprises',amt:4000}],total:39000}
+const EUR_RATE=37.6,baseBudget=40000;
+const profiles={
+  mao:{label:'Farang Kee Mao',color:'var(--orange)',chaosColor:'var(--orange)',buffalo:false,
+    items:[{cat:'🏠 Logement (zone chaude)',base:15000,inflRate:0.04},{cat:'🍺 Alcool & bières',base:18000,inflRate:0.12},{cat:'💃 Go-Go bars & lady drinks',base:12000,inflRate:0.15},{cat:'🍜 Bouffe',base:6000,inflRate:0.05},{cat:'🛺 Transport',base:3000,inflRate:0.03},{cat:'💀 Imprévus / amendes',base:8000,inflRate:0.08}],
+    chaosEvents:[
+      {emoji:'💀',reason:'DÉPOUILLÉ PAR DEUX LADYBOYS',story:`T'étais tellement saoul hier soir que t'as ramené <strong>deux ladyboys depuis Nana Plaza</strong>. Au réveil : téléphone parti, portefeuille parti, montre partie. <strong>Même le passeport a disparu.</strong> Tu te réveilles en slip avec juste un billet de 20 ฿ et une gueule de bois cosmique.`,loss:[15000,45000],suffix:'฿ pillés pendant ton sommeil 😭'},
+      {emoji:'🛵',reason:'ACCIDENT DE SCOOTER',story:`T'avais dit que tu connaissais la route. <strong>T'avais tort.</strong> Accident à 2h du mat, sans casque, après 12 bières. <strong>Fracture du bras, scooter détruit, amende, hospitalisation Bumrungrad.</strong> L'assurance couvre rien.`,loss:[35000,80000],suffix:'฿ partis aux urgences 🏥'},
+      {emoji:'🎰',reason:'CASINO CAMBODGE',story:`"On fait juste un tour au casino côté Cambodge." <strong>C'est ce que t'as dit.</strong> 6 heures plus tard, deux mois de loyer au baccarat, 15 Red Bull whisky, et un truc signé que tu comprends pas. <strong>Bienvenue à Poipet.</strong>`,loss:[20000,70000],suffix:'฿ cramés au baccarat 🃏'},
+      {emoji:'👮',reason:'INTERPELLÉ EN ÉTAT D\'IVRESSE',story:`La police de Pattaya t'a trouvé endormi sur le capot d'un tuk-tuk à 5h du mat. <strong>Garde à vue, amende, bakchich négocié avec le brigadier.</strong> Ton ambassade répond pas le dimanche.`,loss:[8000,25000],suffix:'฿ d\'amende + dessous-de-table 👮'},
+      {emoji:'🤵',reason:'ARNAQUE AU TAILLEUR',story:`Un mec sympa t'a amené dans "la meilleure boutique de costumes, ami prix spécial". <strong>3 costumes commandés, 40% payés d'avance.</strong> Le tailleur rappelle jamais. Les costumes existent pas. <strong>Tout le monde te l'avait dit.</strong>`,loss:[6000,18000],suffix:'฿ pour des costumes fantômes 👔'},
+    ]},
+  nomad:{label:'Digital Nomad Broke',color:'var(--green)',chaosColor:'var(--green)',buffalo:false,
+    items:[{cat:'🏠 Chambre / Airbnb',base:7500,inflRate:0.06},{cat:'💻 Coworking + café',base:5500,inflRate:0.07},{cat:'🍜 Street food',base:4500,inflRate:0.03},{cat:'🛵 Scooter + transport',base:2000,inflRate:0.02},{cat:'🛂 Visa run',base:1500,inflRate:0.01},{cat:'📦 Extras & urgences',base:3000,inflRate:0.04}],
+    chaosEvents:[
+      {emoji:'🪣',reason:'FULL MOON PARTY — BUCKET SUSPECT',story:`Full Moon Party à Koh Phangan. T'as bu dans un bucket plastique avec une paille. <strong>Ce que y'avait dedans, on sait pas vraiment.</strong> Réveil à l'hôpital de Surat Thani deux jours plus tard. <strong>L'assurance t'a demandé si t'avais bu de l'alcool local.</strong> T'as dit non.`,loss:[18000,50000],suffix:'฿ d\'hospitalisation post-bucket 🪣'},
+      {emoji:'💻',reason:'LAPTOP MORT',story:`Ton MacBook a rendu l'âme à cause de l'humidité du dortoir. <strong>Panne totale, disque non récupérable.</strong> 3 mois de projets clients partis. Tu dois racheter un ordi et rembourser un client. <strong>Les clients comprennent pas pourquoi t'es en arrêt depuis la Thaïlande.</strong>`,loss:[25000,55000],suffix:'฿ partis avec le laptop 💻'},
+      {emoji:'🛂',reason:'OVERSTAY VISA — INTERDIT DE TERRITOIRE',story:`T'as oublié de renouveler ton visa. <strong>De 3 semaines.</strong> Chopé à l'aéroport. 500 ฿ par jour d'overstay, rétention, avocat local, et <strong>interdiction de territoire 1 an.</strong> Belle fin de l'aventure nomade.`,loss:[12000,35000],suffix:'฿ d\'amende overstay + avocat 🛂'},
+      {emoji:'🦟',reason:'DENGUE',story:`T'as économisé sur la crème anti-moustiques. <strong>Mauvaise idée.</strong> Dengue confirmée, 5 jours hospitalisé à Chiang Mai Ram. Perfusions toutes les 4h. <strong>Les clients comprennent pas pourquoi t'es en arrêt depuis la Thaïlande.</strong>`,loss:[20000,45000],suffix:'฿ de dengue + jours perdus 🦟'},
+      {emoji:'🏍️',reason:'SCOOTER VOLÉ',story:`Tu reviens au parking et il est plus là. <strong>Volatilisé.</strong> Le propriétaire réclame la valeur intégrale + pénalités. Tu contestes. Il appelle deux cousins. <strong>Tu paies.</strong>`,loss:[80000,80000],suffix:'฿ pour le scooter de quelqu\'un d\'autre 🏍️'},
+    ]},
+  issan:{label:'Issan Girlfriend',color:'var(--pink)',chaosColor:'var(--pink)',buffalo:true,
+    items:[{cat:'🏠 Maison (2-3 chambres)',base:12000,inflRate:0.05},{cat:'🍚 Nourriture famille',base:9000,inflRate:0.06},{cat:'💸 Sin sod / famille mensuel',base:5000,inflRate:0.04},{cat:'🎒 École enfant(s)',base:6000,inflRate:0.03},{cat:'🎉 Fêtes de village',base:3000,inflRate:0.03},{cat:'🎁 Cadeaux & surprises',base:4000,inflRate:0.08}],
+    chaosEvents:[
+      {emoji:'🐃',reason:'LE BUFFLE EST MORT',story:`Le buffle est décédé. <strong>Malgré les 50 000 ฿ de vétérinaire du mois dernier.</strong> Cérémonie 3 jours, buffet, moines, nouveau buffle à racheter. La belle-mère dit que c'est "pour la chance de la famille". <strong>Ta chance à toi, elle est déjà partie.</strong>`,loss:[40000,90000],suffix:'฿ pour le buffle et ses funérailles 🐃'},
+      {emoji:'🏠',reason:'RÉNOVATION MAISON DES PARENTS',story:`La maison des parents "a besoin de réparations urgentes". <strong>Toit, murs, salle de bain, cuisine.</strong> Refuser serait "très honteux". <strong>L'entrepreneur est le frère de la belle-mère.</strong> Le devis est salé.`,loss:[60000,150000],suffix:'฿ pour rénover la maison de quelqu\'un d\'autre 🏠'},
+      {emoji:'💒',reason:'MARIAGE DU COUSIN — T\'ES LE SPONSOR',story:`Le cousin se marie. <strong>Tu es le farang riche de la famille.</strong> La belle-mère a annoncé ton "cadeau" aux invités avant que tu sois au courant. <strong>Tout le village sait. Tu peux pas te dédire.</strong>`,loss:[15000,45000],suffix:'฿ pour un mariage où t\'étais figurant 💒'},
+      {emoji:'🧧',reason:'SONGKRAN FAMILY EDITION',story:`Songkran : <strong>3 jours, 40 personnes à nourrir, feux d'artifice, tenues, un cochon entier.</strong> "Juste quelques proches." Les proches ont invité leurs proches. T'as tenu jusqu'au deuxième jour. <strong>Ensuite t'as sorti la carte.</strong>`,loss:[12000,35000],suffix:'฿ pour Songkran family size 🧧'},
+      {emoji:'📱',reason:'T\'ES LE APPLE STORE DU VILLAGE',story:`Belle-mère : nouveau téléphone. Beau-père : en veut un. Grand frère. Sœur cadette "pour l'école". Cousin qui "travaille dur". Ta femme : yeux de Puss in Boots. <strong>5 téléphones en deux mois.</strong>`,loss:[18000,40000],suffix:'฿ de téléphones pour toute la belle-famille 📱'},
+    ]}
 };
-const messages=[
-  {min:24,color:'var(--green)',msg:'Tout va bien king 👑 T\'as même de la marge pour des extras.',bar:'90%',barStyle:'linear-gradient(90deg,var(--green),#00ff44)',label:'Financial king'},
-  {min:12,color:'var(--green)',msg:'Ça tient la route 🤙 Quelques ajustements et tu peux même mettre de côté.',bar:'70%',barStyle:'linear-gradient(90deg,var(--green),var(--yellow))',label:'Stable'},
-  {min:9,color:'var(--yellow)',msg:'Ça commence à piquer... 😬 Surveille les extras, faut pas déconner.',bar:'55%',barStyle:'linear-gradient(90deg,var(--yellow),var(--orange))',label:'Attention'},
-  {min:6,color:'var(--orange)',msg:'Mode survie activé 🧟 T\'as intérêt à pas te blesser ce mois-ci.',bar:'35%',barStyle:'linear-gradient(90deg,var(--orange),var(--red))',label:'Mode galère'},
-  {min:3,color:'var(--orange)',msg:'Tu vas bientôt revendre ton scooter 🛵 Cherche un colocataire ou appelle ton père.',bar:'20%',barStyle:'linear-gradient(90deg,var(--red),#ff1111)',label:'En détresse'},
-  {min:0,color:'var(--red)',msg:'Appelle ta mère, c\'est fini 📞 Le prochain vol pour CDG est à quelle heure ?',bar:'8%',barStyle:'var(--red)',label:'GAME OVER'},
-];
+const punchlines={
+  godmode:['👑 T\'es un vrai roi. La Thaïlande t\'appartient, les éléphants te saluent.','🏆 Respecté. T\'as plus de mois devant toi que de neurones. Profite.','💎 KING STATUS. Tu peux même te payer une belle-mère supplémentaire.'],
+  chill:['😎 T\'as encore de la marge. Tu vas même faire des économies.','🤙 Tranquille boss. La Thaïlande est à toi pour un bon moment.','🌴 La vie est belle. Profite, mais garde un œil sur le buffle.','👍 T\'aurais pu claquer ça en une nuit à Pattaya.'],
+  decent:['🙂 C\'est correct. T\'as le temps de voir venir.','📊 Ça tient. Évite les imprévus et les amis qui "passent juste deux semaines".','👀 Plutôt bien. Mais une nuit à Walking Street peut tout changer.'],
+  hmm:['😬 Ça commence à sentir le sapin, bro.','🌡️ Entre tenir et craquer, y\'a juste une bucket list.','⚠️ Commence à préparer un plan B.','🎢 La Thaïlande te teste.'],
+  rough:['😰 Tu vas bientôt revendre ton scooter à un Thaï de 16 ans.','🛵 Le scooter part en premier. Ensuite c\'est la dignité.','📉 Mode survie. Street food à 30 ฿. Plus de clim.','🧟 T\'es pas encore mort mais t\'es plus vraiment vivant.'],
+  danger:['🆘 Prépare ton billet retour.','📞 Appelle ta mère. Elle savait depuis le début.','💸 La Thaïlande t\'a tout pris.','😭 Instant noodles et Koh Lanta pour te sentir moins seul.'],
+  terminal:['☠️ Appelle ta mère et dis-lui que t\'as perdu.','🪦 Le Farang Kee Nok retourne au nid. Honteux mais vivant.','📺 Ta vie est un épisode de "Français ruinés à l\'étranger" sur M6.'],
+};
+function getPunchline(m){let p=m>=30?punchlines.godmode:m>=15?punchlines.chill:m>=8?punchlines.decent:m>=4?punchlines.hmm:m>=2?punchlines.rough:m>=1?punchlines.danger:punchlines.terminal;return p[Math.floor(Math.random()*p.length)];}
+function getStatus(m){if(m>=30)return{pct:98,color:'var(--green)',label:'👑 KING MODE'};if(m>=15)return{pct:80,color:'var(--green)',label:'😎 Stable'};if(m>=8)return{pct:60,color:'var(--yellow)',label:'🙂 Correct'};if(m>=4)return{pct:38,color:'var(--orange)',label:'⚠️ Attention'};if(m>=2)return{pct:20,color:'var(--orange)',label:'😰 Mode galère'};if(m>=1)return{pct:10,color:'var(--red)',label:'🆘 En détresse'};return{pct:3,color:'var(--red)',label:'☠️ GAME OVER'};}
+function computeItems(key,budget){const ratio=budget/baseBudget;return profiles[key].items.map(item=>{const f=1+(ratio-1)*item.inflRate*5;return{...item,computed:Math.round(item.base*Math.max(0.7,f)/100)*100};});}
+let currentMode=null,selectedStyle='nomad',budgetVal=40000;
 function setMode(m){
   if(currentMode===m){document.getElementById('panel-'+m).classList.remove('visible');document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));currentMode=null;return;}
-  ['bourre','nomad','wife','survival'].forEach(x=>{document.getElementById('panel-'+x).classList.remove('visible');document.querySelector('.mode-btn.'+x).classList.remove('active');});
-  document.getElementById('panel-'+m).classList.add('visible');
-  document.querySelector('.mode-btn.'+m).classList.add('active');
-  currentMode=m;
+  ['mao','nomad','issan','sim'].forEach(x=>{document.getElementById('panel-'+x).classList.remove('visible');document.querySelector('.mode-btn.'+x).classList.remove('active');});
+  document.getElementById('panel-'+m).classList.add('visible');document.querySelector('.mode-btn.'+m).classList.add('active');currentMode=m;
+  if(m==='sim')renderLivePreview();
 }
-function updateBudget(v){budgetVal=parseInt(v);document.getElementById('budget-display').textContent=budgetVal.toLocaleString('fr-FR')+' ฿';}
-function selectStyle(s){selectedStyle=s;document.querySelectorAll('.style-opt').forEach(el=>el.classList.remove('sel'));document.getElementById('s-'+s).classList.add('sel');}
+function selectStyle(s){selectedStyle=s;document.querySelectorAll('.sopt').forEach(el=>el.classList.remove('sel'));document.getElementById('s-'+s).classList.add('sel');renderLivePreview();document.getElementById('result-zone').classList.remove('show');}
+function onBudgetChange(v){budgetVal=parseInt(v);const eur=Math.round(budgetVal/EUR_RATE);document.getElementById('budget-val').textContent=budgetVal.toLocaleString('fr-FR')+' ฿ ≈ '+eur.toLocaleString('fr-FR')+' €';renderLivePreview();document.getElementById('result-zone').classList.remove('show');}
+function renderLivePreview(){
+  const items=computeItems(selectedStyle,budgetVal),total=items.reduce((s,i)=>s+i.computed,0),maxAmt=Math.max(...items.map(i=>i.computed)),p=profiles[selectedStyle];
+  let html='';
+  items.forEach(item=>{const pct=Math.round((item.computed/total)*100),bp=Math.round((item.computed/maxAmt)*100);html+=`<div class="lp-row"><span class="lp-cat">${item.cat}</span><div class="lp-bar-wrap"><div class="lp-bar-inner" style="width:${bp}%;background:${p.color}44"></div></div><span style="color:${p.color};font-family:'Teko',sans-serif;font-size:0.9rem">${item.computed.toLocaleString('fr-FR')} ฿ <span style="color:var(--text3);font-size:0.5rem">${pct}%</span></span></div>`;});
+  document.getElementById('lp-rows').innerHTML=html;document.getElementById('lp-total').textContent=total.toLocaleString('fr-FR')+' ฿';document.getElementById('lp-total').style.color=p.color;
+  const bzone=document.getElementById('buffalo-alert-zone');
+  if(selectedStyle==='issan')bzone.innerHTML=`<div class="buffalo-alert">🐃 <strong>LE BUFFLE MALADE — Dépense surprise</strong><br>Probabilité : ~30% par trimestre. Montant typique : <strong style="color:var(--pink)">30 000 – 80 000 ฿</strong> en une seule fois.<br><span style="color:var(--text3);font-size:0.55rem">Le vétérinaire du village ne fait pas de crédit. La belle-mère, si — mais avec intérêts affectifs.</span></div>`;
+  else bzone.innerHTML='';
+}
+function showGameOver(ev,loss,color){
+  const box=document.getElementById('go-box');box.style.setProperty('--go-color',color);
+  document.getElementById('go-reason').textContent=ev.reason;document.getElementById('go-emoji').textContent=ev.emoji;document.getElementById('go-story').innerHTML=ev.story;document.getElementById('go-loss').textContent=loss.toLocaleString('fr-FR')+' '+ev.suffix;
+  document.getElementById('go-overlay').classList.add('show');
+}
+function closeGameOver(){document.getElementById('go-overlay').classList.remove('show');}
 function simulate(){
-  const data=costs[selectedStyle],total=data.total,mr=Math.max(0,Math.round((budgetVal/total)*10)/10);
-  let md=messages[messages.length-1];
-  for(let m of messages){if(mr>=m.min){md=m;break;}}
-  const mEl=document.getElementById('result-months');
-  mEl.textContent=mr>=99?'∞':mr%1===0?mr:mr.toFixed(1);
-  mEl.style.color=mr>=99?'var(--green)':md.color;
-  document.getElementById('result-msg').textContent=md.msg;
-  document.getElementById('result-msg').style.color=md.color;
-  document.getElementById('bar-fill').style.width=md.bar;
-  document.getElementById('bar-fill').style.background=md.barStyle;
-  document.getElementById('bar-label').textContent=md.label;
-  document.getElementById('bar-label').style.color=md.color;
-  const rows=document.getElementById('breakdown-rows');
-  rows.innerHTML='';
-  data.items.forEach(item=>{const pct=Math.round((item.amt/total)*100);rows.innerHTML+=`<div class="breakdown-row"><span class="bcat">${item.cat}</span><span class="bamt">${item.amt.toLocaleString('fr-FR')} ฿ <span style="color:var(--text3);font-size:0.6rem">(${pct}%)</span></span></div>`;});
-  document.getElementById('total-monthly').textContent=total.toLocaleString('fr-FR')+' ฿ / mois';
-  document.getElementById('result-zone').classList.add('show');
-  document.getElementById('result-zone').scrollIntoView({behavior:'smooth',block:'nearest'});
+  const p=profiles[selectedStyle],items=computeItems(selectedStyle,budgetVal),total=items.reduce((s,i)=>s+i.computed,0);
+  let buffaloCost=0,buffaloHit=false;
+  if(p.buffalo&&Math.random()<0.30){buffaloHit=true;buffaloCost=Math.round((30000+Math.random()*50000)/1000)*1000;}
+  let chaosEv=null,chaosLoss=0;
+  if(Math.random()<0.25){chaosEv=p.chaosEvents[Math.floor(Math.random()*p.chaosEvents.length)];chaosLoss=chaosEv.loss[0]===chaosEv.loss[1]?chaosEv.loss[0]:Math.round((chaosEv.loss[0]+Math.random()*(chaosEv.loss[1]-chaosEv.loss[0]))/500)*500;}
+  const effectiveMonthly=total+(buffaloCost/3)+chaosLoss,months=Math.max(0,budgetVal/effectiveMonthly),fullMonths=Math.floor(months),days=Math.floor((months-fullMonths)*30),status=getStatus(months),punch=getPunchline(months);
+  const mEl=document.getElementById('rh-months'),mlEl=document.getElementById('rh-mois-label');
+  if(months>=120){mEl.textContent='∞';mEl.style.color='var(--green)';mlEl.style.color='var(--green)';}
+  else{mEl.textContent=fullMonths;mEl.style.color=status.color;mlEl.style.color=status.color;}
+  document.getElementById('rh-days').textContent=months<120?`et ${days} jour${days>1?'s':''}`:'pour toujours';document.getElementById('rh-days').style.color=status.color;
+  document.getElementById('rh-punch').textContent=punch;document.getElementById('rh-punch').style.color=status.color;document.getElementById('rh-punch').style.borderLeftColor=status.color;
+  document.getElementById('sb-fill').style.width=status.pct+'%';document.getElementById('sb-fill').style.background=status.color;document.getElementById('sb-label').textContent=status.label;document.getElementById('sb-label').style.color=status.color;
+  let rbHtml='';
+  items.forEach(item=>{const pct=Math.round((item.computed/effectiveMonthly)*100);rbHtml+=`<div class="rb-row"><span class="rb-cat">${item.cat}</span><span class="rb-amt" style="color:${p.color}">${item.computed.toLocaleString('fr-FR')} ฿<span class="rb-pct">${pct}%</span></span></div>`;});
+  if(buffaloHit)rbHtml+=`<div class="rb-row" style="border-color:var(--pink)"><span class="rb-cat" style="color:var(--pink)">🐃 Buffle malade (ce trimestre)</span><span class="rb-amt" style="color:var(--pink)">${buffaloCost.toLocaleString('fr-FR')} ฿<span class="rb-pct">⚡</span></span></div>`;
+  if(chaosEv)rbHtml+=`<div class="rb-row" style="border-color:${p.chaosColor}"><span class="rb-cat" style="color:${p.chaosColor}">💥 Événement catastrophe</span><span class="rb-amt" style="color:${p.chaosColor}">${chaosLoss.toLocaleString('fr-FR')} ฿<span class="rb-pct">☠️</span></span></div>`;
+  rbHtml+=`<div class="rb-row"><span class="rb-cat" style="color:var(--text);text-transform:uppercase;letter-spacing:1px;font-size:0.6rem">Total mensuel effectif</span><span class="rb-amt" style="color:var(--text);font-size:1.2rem">${Math.round(effectiveMonthly).toLocaleString('fr-FR')} ฿</span></div>`;
+  document.getElementById('rb-rows').innerHTML=rbHtml;
+  const eurTotal=Math.round(effectiveMonthly/EUR_RATE);let note=`💡 Total effectif ≈ <strong>${eurTotal} €/mois</strong>.`;
+  if(buffaloHit)note+=` 🐃 <strong style="color:var(--pink)">Buffle frappé !</strong>`;if(chaosEv)note+=` 💥 <strong style="color:${p.chaosColor}">Événement catastrophe — voir pop-up.</strong>`;
+  document.getElementById('inflation-note').innerHTML=note;document.getElementById('result-zone').classList.add('show');document.getElementById('result-zone').scrollIntoView({behavior:'smooth',block:'nearest'});
+  if(chaosEv)setTimeout(()=>showGameOver(chaosEv,chaosLoss,p.chaosColor),800);
 }
-function resetSim(){document.getElementById('result-zone').classList.remove('show');document.getElementById('budget-range').value=40000;updateBudget(40000);selectStyle('nomad');}
+function resetSim(){document.getElementById('result-zone').classList.remove('show');document.getElementById('budget-range').value=40000;onBudgetChange(40000);selectStyle('nomad');}
+renderLivePreview();
 </script>
 </body>
 </html>
