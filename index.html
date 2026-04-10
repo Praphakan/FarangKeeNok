@@ -19,12 +19,49 @@
 body{background:var(--bg);color:var(--text);font-family:'Space Mono',monospace;min-height:100vh;overflow-x:hidden}
 #scanlines{position:fixed;inset:0;pointer-events:none;z-index:100;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px)}
 
+/* LANG MODAL */
+.lang-modal{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.95);display:flex;align-items:center;justify-content:center;animation:fadeIn 0.3s ease}
+.lang-modal.hide{display:none}
+.lang-box{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:2.5rem 2rem;max-width:360px;width:90%;text-align:center}
+.lang-box-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:4px;background:linear-gradient(135deg,var(--orange),var(--yellow),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.3rem}
+.lang-box-sub{font-size:0.55rem;color:var(--text3);letter-spacing:3px;text-transform:uppercase;margin-bottom:2rem}
+.lang-choices{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.lang-choice{padding:1.25rem 1rem;border-radius:12px;cursor:pointer;transition:all 0.2s;border:1px solid var(--border2);background:var(--bg3)}
+.lang-choice:hover{transform:translateY(-3px)}
+.lang-choice.fr-choice{border-color:var(--orange)}.lang-choice.en-choice{border-color:var(--blue)}
+.lang-choice:hover.fr-choice{background:var(--orangedim);box-shadow:0 0 20px rgba(255,107,0,0.2)}
+.lang-choice:hover.en-choice{background:var(--bluedim);box-shadow:0 0 20px rgba(0,212,255,0.2)}
+.lang-flag{font-size:3rem;display:block;margin-bottom:0.5rem}
+.lang-name{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:3px}
+.lang-choice.fr-choice .lang-name{color:var(--orange)}.lang-choice.en-choice .lang-name{color:var(--blue)}
+.lang-sub{font-size:0.5rem;color:var(--text3);letter-spacing:1px;margin-top:0.2rem}
+
+/* MINI TOGGLE — pill ultra compact */
+.lang-toggle{
+  position:fixed;top:8px;right:8px;z-index:500;
+  display:flex;align-items:center;gap:2px;
+  background:rgba(10,10,20,0.85);
+  border:1px solid var(--border2);
+  border-radius:20px;padding:3px 5px;
+  backdrop-filter:blur(4px);
+}
+.lang-btn{
+  font-size:0.65rem;width:24px;height:20px;
+  display:flex;align-items:center;justify-content:center;
+  border:none;border-radius:14px;cursor:pointer;
+  background:transparent;color:var(--text3);
+  transition:all 0.15s;line-height:1;padding:0;
+}
+.lang-btn.active{background:rgba(255,107,0,0.25);color:var(--orange)}
+.lang-btn:hover:not(.active){color:var(--text2)}
+
+/* GAME OVER */
 .go-overlay{display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.93);align-items:center;justify-content:center;padding:1rem}
 .go-overlay.show{display:flex;animation:fadeIn 0.4s ease}
 .go-box{border:2px solid var(--go-color,var(--red));border-radius:16px;padding:2rem;max-width:520px;width:100%;text-align:center;box-shadow:0 0 60px color-mix(in srgb,var(--go-color,var(--red)) 40%,transparent);animation:shake 0.5s ease;background:#080510}
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
 .go-gameover{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,8vw,4rem);letter-spacing:6px;color:var(--go-color,var(--red));line-height:1;text-shadow:0 0 30px color-mix(in srgb,var(--go-color,var(--red)) 60%,transparent)}
-.go-reason{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.1rem,4vw,1.8rem);letter-spacing:3px;color:var(--go-color,var(--red));opacity:0.85;margin-top:0.2rem;margin-bottom:0.75rem;line-height:1.2}
+.go-reason{font-family:'Bebas Neue',sans-serif;font-size:clamp(1rem,4vw,1.7rem);letter-spacing:3px;color:var(--go-color,var(--red));opacity:0.85;margin-top:0.2rem;margin-bottom:0.75rem;line-height:1.2}
 .go-emoji{font-size:2.5rem;display:block;margin:0.75rem 0}
 .go-story{font-size:0.76rem;line-height:1.9;color:var(--text);background:var(--bg3);border-radius:8px;padding:1rem;border:1px solid var(--border2);text-align:left;margin-bottom:1rem}
 .go-story strong{color:var(--go-color,var(--red))}
@@ -54,7 +91,6 @@ header{text-align:center;padding:2rem 1rem 0.5rem}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .ptitle{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;letter-spacing:2px;margin-bottom:1.25rem}
 .orange .ptitle{color:var(--orange)}.greenp .ptitle{color:var(--green)}.pinkp .ptitle{color:var(--pink)}.bluep .ptitle{color:var(--blue)}
-
 .egrid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem}
 @media(min-width:580px){.egrid{grid-template-columns:repeat(3,1fr)}}
 .ecard{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.75rem}
@@ -67,12 +103,10 @@ header{text-align:center;padding:2rem 1rem 0.5rem}
 .especial{font-size:0.52rem;color:var(--pink);margin-top:0.3rem;font-weight:700}
 .orange .eamt{color:var(--orange)}.greenp .eamt{color:var(--green)}.pinkp .eamt{color:var(--pink)}
 .buffalo-badge{display:inline-block;background:var(--pinkdim);border:1px solid var(--pink);color:var(--pink);font-size:0.5rem;padding:2px 6px;border-radius:4px;letter-spacing:1px;margin-top:0.4rem}
-
 .total-bar{display:flex;justify-content:space-between;align-items:center;margin-top:1rem;padding:1rem;background:var(--bg4);border-radius:8px;border:1px solid var(--border2)}
 .tlabel{font-size:0.65rem;color:var(--text2);text-transform:uppercase;letter-spacing:2px}
 .tamt{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:2px}
 .disc{font-size:0.58rem;color:var(--text3);margin-top:0.4rem;font-style:italic;line-height:1.5}
-
 .sim-section{margin-bottom:1.5rem}
 .sim-label{font-size:0.6rem;color:var(--text2);text-transform:uppercase;letter-spacing:2px;margin-bottom:0.6rem;display:flex;justify-content:space-between;align-items:center}
 .sim-label .val{font-size:1.1rem;color:var(--blue);font-family:'Teko',sans-serif;font-weight:700;letter-spacing:1px}
@@ -131,225 +165,151 @@ footer{text-align:center;padding:2rem 1rem;font-size:0.55rem;color:var(--text3);
 <body>
 <div id="scanlines"></div>
 
+<!-- LANG MODAL -->
+<div class="lang-modal" id="lang-modal">
+  <div class="lang-box">
+    <div class="lang-box-title">Farang Kee Nok</div>
+    <div class="lang-box-sub">Choose your language / Choisissez votre langue</div>
+    <div class="lang-choices">
+      <div class="lang-choice fr-choice" onclick="setLang('fr')">
+        <span class="lang-flag">🇫🇷</span>
+        <div class="lang-name">Français</div>
+        <div class="lang-sub">Version française</div>
+      </div>
+      <div class="lang-choice en-choice" onclick="setLang('en')">
+        <span class="lang-flag">🇬🇧</span>
+        <div class="lang-name">English</div>
+        <div class="lang-sub">British version</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MINI TOGGLE -->
+<div class="lang-toggle">
+  <button class="lang-btn active" id="btn-fr" onclick="setLang('fr')">🇫🇷</button>
+  <button class="lang-btn" id="btn-en" onclick="setLang('en')">🇬🇧</button>
+</div>
+
+<!-- GAME OVER -->
 <div class="go-overlay" id="go-overlay">
   <div class="go-box" id="go-box">
     <div class="go-gameover">GAME OVER</div>
-    <div class="go-reason" id="go-reason">RAISON</div>
+    <div class="go-reason" id="go-reason"></div>
     <span class="go-emoji" id="go-emoji">💀</span>
     <div class="go-story" id="go-story"></div>
     <div class="go-loss" id="go-loss"></div>
-    <button class="go-btn" onclick="closeGameOver()">😭 Fermer et accepter ma ruine</button>
+    <button class="go-btn" id="go-close-btn" onclick="closeGameOver()"></button>
   </div>
 </div>
 
 <header>
   <div class="logo">Farang Kee Nok</div>
   <div class="logo-sub">S I M U L A T O R</div>
-  <div class="tagline">ฝรั่งขี้นก — Pour les cheap Charlies au pays du sourire 🇹🇭</div>
-  <div class="badge">⚡ Combien de temps avant la débâcle totale ? ⚡</div>
+  <div class="tagline" id="tagline"></div>
+  <div class="badge" id="badge"></div>
 </header>
 
 <div class="modes">
-  <button class="mode-btn mao" onclick="setMode('mao')"><span class="moji">🍺</span><span class="mlabel">Farang<br>Kee Mao</span></button>
-  <button class="mode-btn nomad" onclick="setMode('nomad')"><span class="moji">💻</span><span class="mlabel">Digital Nomad<br>Broke</span></button>
-  <button class="mode-btn issan" onclick="setMode('issan')"><span class="moji">👰‍♀️</span><span class="mlabel">Issan<br>Girlfriend</span></button>
-  <button class="mode-btn sim" onclick="setMode('sim')"><span class="moji">⏳</span><span class="mlabel">Simulateur<br>Survie</span></button>
+  <button class="mode-btn mao" onclick="setMode('mao')"><span class="moji">🍺</span><span class="mlabel" id="lbl-mao"></span></button>
+  <button class="mode-btn nomad" onclick="setMode('nomad')"><span class="moji">💻</span><span class="mlabel" id="lbl-nomad"></span></button>
+  <button class="mode-btn issan" onclick="setMode('issan')"><span class="moji">👰‍♀️</span><span class="mlabel" id="lbl-issan"></span></button>
+  <button class="mode-btn sim" onclick="setMode('sim')"><span class="moji">⏳</span><span class="mlabel" id="lbl-sim"></span></button>
 </div>
 
 <div class="main">
-
-  <div id="panel-mao" class="panel orange">
-    <div class="ptitle">🍺 Farang Kee Mao — Budget Mensuel</div>
-    <div class="egrid">
-      <div class="ecard"><div class="ecat">Logement zone chaude</div><div class="eamt">15 000 ฿</div><div class="edesc">Studio Bangla Road / Walking Street. Bruit inclus, voisins louches.</div></div>
-      <div class="ecard"><div class="ecat">Alcool & bières</div><div class="eamt">18 000 ฿</div><div class="edesc">Chang, Leo, buckets, shots. Les soirées commencent à 16h.</div><div class="ewarn">⚠ estimation basse</div></div>
-      <div class="ecard"><div class="ecat">Go-Go bars & lady drinks</div><div class="eamt">12 000 ฿</div><div class="edesc">Lady drinks, bar fines, cadeaux spontanés.</div></div>
-      <div class="ecard"><div class="ecat">Bouffe</div><div class="eamt">6 000 ฿</div><div class="edesc">Street food + kebab 4h du mat pour éponger la soirée.</div></div>
-      <div class="ecard"><div class="ecat">Transport</div><div class="eamt">3 000 ฿</div><div class="edesc">Tuk-tuk, taxi, scooter loué que tu vas bousiller.</div></div>
-      <div class="ecard"><div class="ecat">Imprévus 💀</div><div class="eamt">8 000 ฿</div><div class="edesc">Amendes, hôpital, téléphone perdu, fierté endommagée.</div><div class="ewarn">⚠ toujours là</div></div>
-    </div>
-    <div class="total-bar"><div><div class="tlabel">Total mensuel estimé</div><div class="disc">hors visa, incidents diplomatiques et nuits blanches</div></div><div class="tamt" style="color:var(--orange)">62 000 ฿</div></div>
-    <div class="disc">≈ 1 650 EUR/mois • Peut exploser ×3 pendant Songkran</div>
-  </div>
-
-  <div id="panel-nomad" class="panel greenp">
-    <div class="ptitle">💻 Digital Nomad Broke — Budget Serré</div>
-    <div class="egrid">
-      <div class="ecard"><div class="ecat">Chambre / Airbnb</div><div class="eamt">7 500 ฿</div><div class="edesc">Chiang Mai, Chaweng, Pai. Clim capricieuse. Wifi "up to 10 Mbps".</div></div>
-      <div class="ecard"><div class="ecat">Coworking + café</div><div class="eamt">5 500 ฿</div><div class="edesc">CAMP, Yellow, Hub53... ou juste un café avec prise électrique.</div></div>
-      <div class="ecard"><div class="ecat">Street food</div><div class="eamt">4 500 ฿</div><div class="edesc">Pad Thai, khao man gai, fruit shakes. La paix intérieure pour 60 ฿.</div></div>
-      <div class="ecard"><div class="ecat">Scooter pourri</div><div class="eamt">2 000 ฿</div><div class="edesc">Honda Click 2009, loc mensuelle. La chaîne claque mais ça roule.</div></div>
-      <div class="ecard"><div class="ecat">Visa run</div><div class="eamt">1 500 ฿</div><div class="edesc">Bus Poi Pet / Mae Sai. 1 fois par mois si tu joues à l'économique.</div></div>
-      <div class="ecard"><div class="ecat">Extras & urgences</div><div class="eamt">3 000 ฿</div><div class="edesc">Oat latte, Netflix, SIM data, kit Ibuprofen + Imodium.</div></div>
-    </div>
-    <div class="total-bar"><div><div class="tlabel">Total mensuel estimé</div><div class="disc">hors billet retour et crise existentielle</div></div><div class="tamt" style="color:var(--green)">24 000 ฿</div></div>
-    <div class="disc">≈ 640 EUR/mois • Viable si tu gagnes +1 200€ et que tu te mens à toi-même</div>
-  </div>
-
-  <div id="panel-issan" class="panel pinkp">
-    <div class="ptitle">👰‍♀️ Issan Girlfriend — La Vraie Vie</div>
-    <div class="egrid">
-      <div class="ecard"><div class="ecat">Maison / Loyer</div><div class="eamt">12 000 ฿</div><div class="edesc">Maison 2-3 chambres. La 3ème est officiellement "pour les invités".</div></div>
-      <div class="ecard"><div class="ecat">Nourriture famille</div><div class="eamt">9 000 ฿</div><div class="edesc">Tu nourris 2 adultes + belle-mère + tante + le chien de la belle-mère.</div><div class="ewarn">version hard : +4 000 ฿</div></div>
-      <div class="ecard"><div class="ecat">Sin sod / famille</div><div class="eamt">5 000 ฿</div><div class="edesc">Virement mensuel aux parents. C'est culturel. Tu avais dit oui.</div></div>
-      <div class="ecard"><div class="ecat">École enfant(s)</div><div class="eamt">6 000 ฿</div><div class="edesc">Privée, uniforme, activités, livres. Tu veux le meilleur, non ?</div></div>
-      <div class="ecard"><div class="ecat">Fêtes de village</div><div class="eamt">3 000 ฿</div><div class="edesc">Mariage cousin, ordination neveu, anniversaire grand-mère #2.</div></div>
-      <div class="ecard"><div class="ecat">Cadeaux & surprises</div><div class="eamt">4 000 ฿</div><div class="edesc">Sac, téléphone belle-mère, moteur scooter beau-frère.</div><div class="ewarn">⚠ "juste une fois" chaque semaine</div></div>
-      <div class="ecard special"><div class="ecat">🐃 Le buffle malade</div><div class="eamt" style="color:var(--pink)">~50 000 ฿</div><div class="edesc">LE classique. Le buffle de la belle-famille est malade. Vétérinaire urgent. Sinon il meurt. Tu paies.</div><div class="especial">⚡ Probabilité : ~30% par trimestre</div><div class="buffalo-badge">DÉPENSE SURPRISE™</div></div>
-    </div>
-    <div class="total-bar"><div><div class="tlabel">Total mensuel (hors buffle)</div><div class="disc">version soft — hors rénovation maison des parents</div></div><div class="tamt" style="color:var(--pink)">39 000 ฿</div></div>
-    <div class="disc">≈ 1 040 EUR/mois soft • +sin sod initial 200 000–500 000 ฿</div>
-  </div>
-
+  <div id="panel-mao" class="panel orange"><div class="ptitle" id="mao-title"></div><div class="egrid" id="mao-grid"></div><div class="total-bar"><div><div class="tlabel" id="mao-total-label"></div><div class="disc" id="mao-disc"></div></div><div class="tamt" style="color:var(--orange)">62 000 ฿</div></div><div class="disc" id="mao-disc2"></div></div>
+  <div id="panel-nomad" class="panel greenp"><div class="ptitle" id="nomad-title"></div><div class="egrid" id="nomad-grid"></div><div class="total-bar"><div><div class="tlabel" id="nomad-total-label"></div><div class="disc" id="nomad-disc"></div></div><div class="tamt" style="color:var(--green)">24 000 ฿</div></div><div class="disc" id="nomad-disc2"></div></div>
+  <div id="panel-issan" class="panel pinkp"><div class="ptitle" id="issan-title"></div><div class="egrid" id="issan-grid"></div><div class="total-bar"><div><div class="tlabel" id="issan-total-label"></div><div class="disc" id="issan-disc"></div></div><div class="tamt" style="color:var(--pink)">39 000 ฿</div></div><div class="disc" id="issan-disc2"></div></div>
   <div id="panel-sim" class="panel bluep">
-    <div class="ptitle">⏳ Simulateur de Survie</div>
+    <div class="ptitle" id="sim-title"></div>
     <div class="sim-section">
-      <div class="sim-label">Budget mensuel disponible <span class="val" id="budget-val">40 000 ฿ ≈ 1 065 €</span></div>
+      <div class="sim-label"><span id="budget-label"></span><span class="val" id="budget-val">40 000 ฿</span></div>
       <input type="range" min="10000" max="200000" step="1000" value="40000" id="budget-range" oninput="onBudgetChange(this.value)">
-      <div class="range-hints"><span>10 000 ฿ — pure galère</span><span>200 000 ฿ — flexer en tongs</span></div>
+      <div class="range-hints"><span id="hint-low"></span><span id="hint-high"></span></div>
     </div>
     <div class="sim-section">
-      <div class="sim-label" style="margin-bottom:0.5rem">Ton style de vie</div>
+      <div class="sim-label" style="margin-bottom:0.5rem"><span id="lifestyle-label"></span></div>
       <div class="style-grid">
-        <div class="sopt" id="s-mao" onclick="selectStyle('mao')"><span class="se">🍺</span>Farang Kee Mao</div>
-        <div class="sopt sel" id="s-nomad" onclick="selectStyle('nomad')"><span class="se">💻</span>Nomad Broke</div>
-        <div class="sopt" id="s-issan" onclick="selectStyle('issan')"><span class="se">👰‍♀️</span>Issan GF</div>
+        <div class="sopt" id="s-mao" onclick="selectStyle('mao')"><span class="se">🍺</span><span id="sopt-mao"></span></div>
+        <div class="sopt sel" id="s-nomad" onclick="selectStyle('nomad')"><span class="se">💻</span><span id="sopt-nomad"></span></div>
+        <div class="sopt" id="s-issan" onclick="selectStyle('issan')"><span class="se">👰‍♀️</span><span id="sopt-issan"></span></div>
       </div>
     </div>
-    <div class="live-preview">
-      <div class="lp-title">📊 Dépenses calculées en temps réel (lifestyle inflation activée)</div>
-      <div id="lp-rows"></div>
-      <div class="lp-total-row">
-        <span class="lp-total-label">Total mensuel estimé</span>
-        <span class="lp-total-val" id="lp-total" style="color:var(--blue)">—</span>
-      </div>
-    </div>
+    <div class="live-preview"><div class="lp-title" id="lp-title"></div><div id="lp-rows"></div><div class="lp-total-row"><span class="lp-total-label" id="lp-total-label"></span><span class="lp-total-val" id="lp-total" style="color:var(--blue)">—</span></div></div>
     <div id="buffalo-alert-zone"></div>
-    <button class="calc-btn" onclick="simulate()">💀 CALCULER MA SURVIE 💀</button>
+    <button class="calc-btn" id="calc-btn" onclick="simulate()"></button>
     <div id="result-zone" class="result-zone">
       <div class="result-hero">
-        <div class="rh-pre">⏳ Tu vas tenir environ</div>
-        <div class="rh-big-line">
-          <div class="rh-months" id="rh-months">—</div>
-          <div class="rh-mois-label" id="rh-mois-label" style="color:var(--green)">mois</div>
-        </div>
-        <div class="rh-days" id="rh-days">— jours</div>
-        <div class="rh-label">avant de craquer et de rentrer en France 🛫</div>
+        <div class="rh-pre" id="rh-pre"></div>
+        <div class="rh-big-line"><div class="rh-months" id="rh-months">—</div><div class="rh-mois-label" id="rh-mois-label" style="color:var(--green)"></div></div>
+        <div class="rh-days" id="rh-days"></div>
+        <div class="rh-label" id="rh-label"></div>
         <div class="rh-punch" id="rh-punch" style="color:var(--green)">...</div>
       </div>
-      <div class="status-bar-wrap">
-        <div class="sb-meta"><span>Niveau de survie</span><span id="sb-label">—</span></div>
-        <div class="sb-track"><div class="sb-fill" id="sb-fill" style="width:0%"></div></div>
-      </div>
-      <div class="res-breakdown">
-        <div class="rb-title">💸 Détail du budget mensuel calculé</div>
-        <div id="rb-rows"></div>
-        <div class="inflation-note" id="inflation-note"></div>
-      </div>
-      <button class="reset-btn" onclick="resetSim()">🔄 Relancer une simulation</button>
+      <div class="status-bar-wrap"><div class="sb-meta"><span id="sb-title"></span><span id="sb-label">—</span></div><div class="sb-track"><div class="sb-fill" id="sb-fill" style="width:0%"></div></div></div>
+      <div class="res-breakdown"><div class="rb-title" id="rb-title"></div><div id="rb-rows"></div><div class="inflation-note" id="inflation-note"></div></div>
+      <button class="reset-btn" id="reset-btn" onclick="resetSim()"></button>
     </div>
   </div>
 </div>
-
-<footer>
-  Farang Kee Nok Simulator — ฝรั่งขี้นก<br>
-  Pour les cheap Charlies au pays du sourire 🇹🇭<br>
-  <span class="blink">■</span> Données 2024-2025 — Aucun buffle n'a été blessé dans la création de ce simulateur <span class="blink">■</span>
-</footer>
+<footer id="footer-text"></footer>
 
 <script>
 const EUR_RATE=37.6,baseBudget=40000;
+let lang='fr',currentMode=null,selectedStyle='nomad',budgetVal=40000;
+
+const ui={
+  fr:{tagline:'ฝรั่งขี้นก — Pour les cheap Charlies au pays du sourire 🇹🇭',badge:'⚡ Combien de temps avant la débâcle totale ? ⚡',lblMao:'Farang<br>Kee Mao',lblNomad:'Digital Nomad<br>Broke',lblIssan:'Issan<br>Girlfriend',lblSim:'Simulateur<br>Survie',maoTitle:'🍺 Farang Kee Mao — Budget Mensuel',nomadTitle:'💻 Digital Nomad Broke — Budget Serré',issanTitle:'👰‍♀️ Issan Girlfriend — La Vraie Vie',simTitle:'⏳ Simulateur de Survie',totalLabel:'Total mensuel estimé',issanTotalLabel:'Total mensuel (hors buffle)',maoDisc:'hors visa, incidents diplomatiques et nuits blanches',maoDisc2:'≈ 1 650 EUR/mois • Peut exploser ×3 pendant Songkran',nomadDisc:'hors billet retour et crise existentielle',nomadDisc2:'≈ 640 EUR/mois • Viable si tu gagnes +1 200€ et que tu te mens à toi-même',issanDisc:'version soft — hors rénovation maison des parents',issanDisc2:'≈ 1 040 EUR/mois soft • +sin sod initial 200 000–500 000 ฿',budgetLabel:'Budget mensuel disponible',hintLow:'10 000 ฿ — pure galère',hintHigh:'200 000 ฿ — flexer en tongs',lifestyleLabel:'Ton style de vie',soptMao:'Farang Kee Mao',soptNomad:'Nomad Broke',soptIssan:'Issan GF',lpTitle:'📊 Dépenses en temps réel (lifestyle inflation activée)',lpTotalLabel:'Total mensuel estimé',calcBtn:'💀 CALCULER MA SURVIE 💀',rhPre:'⏳ Tu vas tenir environ',rhMois:'mois',rhDaysFn:(d)=>`et ${d} jour${d>1?'s':''}`,rhForever:'pour toujours',rhLabel:'avant de craquer et de rentrer en France 🛫',sbTitle:'Niveau de survie',rbTitle:'💸 Détail du budget mensuel calculé',noteFn:(e)=>`💡 Total effectif ≈ <strong>${e} €/mois</strong>.`,buffaloNote:` 🐃 <strong style="color:var(--pink)">Buffle frappé !</strong>`,chaosNote:(c)=>` 💥 <strong style="color:${c}">Événement catastrophe — voir pop-up.</strong>`,totalEffectif:'Total mensuel effectif',buffaloRow:'🐃 Buffle malade (ce trimestre)',chaosRow:'💥 Événement catastrophe',resetBtn:'🔄 Relancer une simulation',goCloseBtn:'😭 Fermer et accepter ma ruine',buffaloAlert:`🐃 <strong>LE BUFFLE MALADE — Dépense surprise</strong><br>Probabilité : ~30% par trimestre. Montant typique : <strong style="color:var(--pink)">30 000 – 80 000 ฿</strong> en une seule fois.<br><span style="color:var(--text3);font-size:0.55rem">Le vétérinaire du village ne fait pas de crédit. La belle-mère, si — mais avec intérêts affectifs.</span>`,footer:`Farang Kee Nok Simulator — ฝรั่งขี้นก<br>Pour les cheap Charlies au pays du sourire 🇹🇭<br><span class="blink">■</span> Données 2024-2025 — Aucun buffle n'a été blessé dans la création de ce simulateur <span class="blink">■</span>`,statusLabels:{godmode:'👑 KING MODE',chill:'😎 Stable',decent:'🙂 Correct',hmm:'⚠️ Attention',rough:'😰 Mode galère',danger:'🆘 En détresse',terminal:'☠️ GAME OVER'}},
+  en:{tagline:'ฝรั่งขี้นก — For the Cheap Charlies of the Land of Smiles 🇹🇭',badge:'⚡ How long before you completely bottom out? ⚡',lblMao:'Farang<br>Kee Mao',lblNomad:'Digital Nomad<br>Broke',lblIssan:'Issan<br>Girlfriend',lblSim:'Survival<br>Simulator',maoTitle:'🍺 Farang Kee Mao — Monthly Budget',nomadTitle:'💻 Digital Nomad Broke — Tight Budget',issanTitle:'👰‍♀️ Issan Girlfriend — Real Life',simTitle:'⏳ Survival Simulator',totalLabel:'Estimated monthly total',issanTotalLabel:'Monthly total (excl. buffalo)',maoDisc:'excluding visa, diplomatic incidents and blackout nights',maoDisc2:'≈ £1,400/month • Can triple during Songkran week',nomadDisc:'excluding flights home and existential crisis',nomadDisc2:'≈ £540/month • Viable if you earn +£1,000 and lie to yourself daily',issanDisc:'soft version — excluding renovation of her parents\' house',issanDisc2:'≈ £870/month soft • +sin sod upfront 200,000–500,000 ฿',budgetLabel:'Monthly budget available',hintLow:'10,000 ฿ — dead broke',hintHigh:'200,000 ฿ — flexing in flip flops',lifestyleLabel:'Your lifestyle',soptMao:'Farang Kee Mao',soptNomad:'Nomad Broke',soptIssan:'Issan GF',lpTitle:'📊 Real-time expenses (lifestyle inflation applied)',lpTotalLabel:'Estimated monthly total',calcBtn:'💀 CALCULATE MY SURVIVAL 💀',rhPre:'⏳ You\'ll last approximately',rhMois:'months',rhDaysFn:(d)=>`and ${d} day${d>1?'s':''}`,rhForever:'forever',rhLabel:'before bottoming out and flying home 🛫',sbTitle:'Survival level',rbTitle:'💸 Monthly budget breakdown',noteFn:(e)=>`💡 Effective total ≈ <strong>£${Math.round(parseInt(String(e).replace(/\s/g,''))*0.88).toLocaleString()} / month</strong>.`,buffaloNote:` 🐃 <strong style="color:var(--pink)">The buffalo struck!</strong>`,chaosNote:(c)=>` 💥 <strong style="color:${c}">Disaster event — see pop-up.</strong>`,totalEffectif:'Effective monthly total',buffaloRow:'🐃 Sick buffalo (this quarter)',chaosRow:'💥 Disaster event',resetBtn:'🔄 Run another simulation',goCloseBtn:'😭 Close and accept my ruin',buffaloAlert:`🐃 <strong>THE SICK BUFFALO — Surprise expense</strong><br>Probability: ~30% per quarter. Typical amount: <strong style="color:var(--pink)">30,000 – 80,000 ฿</strong> in one hit.<br><span style="color:var(--text3);font-size:0.55rem">The village vet doesn't do credit. Her mum does — but with emotional interest.</span>`,footer:`Farang Kee Nok Simulator — ฝรั่งขี้นก<br>For the Cheap Charlies of the Land of Smiles 🇹🇭<br><span class="blink">■</span> Data 2024-2025 — No buffalo was harmed in the making of this simulator <span class="blink">■</span>`,statusLabels:{godmode:'👑 KING MODE',chill:'😎 Solid',decent:'🙂 Decent',hmm:'⚠️ Watch out',rough:'😰 Skint mode',danger:'🆘 In trouble',terminal:'☠️ GAME OVER'}}
+};
+
+const panelCards={
+  mao:{fr:[{cat:'Logement zone chaude',amt:'15 000 ฿',desc:'Studio Bangla Road / Walking Street. Bruit inclus, voisins louches.'},{cat:'Alcool & bières',amt:'18 000 ฿',desc:'Chang, Leo, buckets, shots. Les soirées commencent à 16h.',warn:'⚠ estimation basse'},{cat:'Go-Go bars & lady drinks',amt:'12 000 ฿',desc:'Lady drinks, bar fines, cadeaux spontanés.'},{cat:'Bouffe',amt:'6 000 ฿',desc:'Street food + kebab 4h du mat pour éponger la soirée.'},{cat:'Transport',amt:'3 000 ฿',desc:'Tuk-tuk, taxi, scooter loué que tu vas bousiller.'},{cat:'Imprévus 💀',amt:'8 000 ฿',desc:'Amendes, hôpital, téléphone perdu, fierté endommagée.',warn:'⚠ toujours là'}],en:[{cat:'Accommodation (hot zone)',amt:'15,000 ฿',desc:'Studio on Walking Street / Bangla Road. Noise included, dodgy neighbours.'},{cat:'Alcohol & beers',amt:'18,000 ฿',desc:'Chang, Leo, buckets, shots. Nights start at 4pm.',warn:'⚠ conservative estimate'},{cat:'Go-Go bars & lady drinks',amt:'12,000 ฿',desc:'Lady drinks, bar fines, spontaneous gifts.'},{cat:'Food',amt:'6,000 ฿',desc:'Street food + 4am kebab to soak up the night.'},{cat:'Transport',amt:'3,000 ฿',desc:'Tuk-tuks, taxis, rental scooter you will inevitably crash.'},{cat:'Unexpected costs 💀',amt:'8,000 ฿',desc:'Fines, minor hospitalisation, lost phone, damaged dignity.',warn:'⚠ always there'}]},
+  nomad:{fr:[{cat:'Chambre / Airbnb',amt:'7 500 ฿',desc:'Chiang Mai, Chaweng, Pai. Clim capricieuse. Wifi "up to 10 Mbps".'},{cat:'Coworking + café',amt:'5 500 ฿',desc:'CAMP, Yellow, Hub53... ou juste un café avec prise électrique.'},{cat:'Street food',amt:'4 500 ฿',desc:'Pad Thai, khao man gai, fruit shakes. La paix intérieure pour 60 ฿.'},{cat:'Scooter pourri',amt:'2 000 ฿',desc:'Honda Click 2009, loc mensuelle. La chaîne claque mais ça roule.'},{cat:'Visa run',amt:'1 500 ฿',desc:'Bus Poi Pet / Mae Sai. 1 fois par mois si tu joues à l\'économique.'},{cat:'Extras & urgences',amt:'3 000 ฿',desc:'Oat latte, Netflix, SIM data, kit Ibuprofen + Imodium.'}],en:[{cat:'Room / Airbnb',amt:'7,500 ฿',desc:'Chiang Mai, Chaweng, Pai. Dodgy AC. WiFi "up to 10 Mbps" (lol).'},{cat:'Coworking + café',amt:'5,500 ฿',desc:'CAMP, Yellow, Hub53... or any café with a plug socket.'},{cat:'Street food',amt:'4,500 ฿',desc:'Pad Thai, khao man gai, fruit shakes. Inner peace for 60 ฿.'},{cat:'Battered scooter',amt:'2,000 ฿',desc:'Honda Click 2009, monthly rental. Chain rattles but it moves.'},{cat:'Visa run',amt:'1,500 ฿',desc:'Bus to Poi Pet / Mae Sai. Once a month on the cheap.'},{cat:'Extras & emergencies',amt:'3,000 ฿',desc:'Oat latte, Netflix, SIM data, Ibuprofen + Imodium starter pack.'}]},
+  issan:{fr:[{cat:'Maison / Loyer',amt:'12 000 ฿',desc:'Maison 2-3 chambres. La 3ème est officiellement "pour les invités".'},{cat:'Nourriture famille',amt:'9 000 ฿',desc:'Tu nourris 2 adultes + belle-mère + tante + le chien de la belle-mère.',warn:'version hard : +4 000 ฿'},{cat:'Sin sod / famille',amt:'5 000 ฿',desc:'Virement mensuel aux parents. C\'est culturel. Tu avais dit oui.'},{cat:'École enfant(s)',amt:'6 000 ฿',desc:'Privée, uniforme, activités, livres. Tu veux le meilleur, non ?'},{cat:'Fêtes de village',amt:'3 000 ฿',desc:'Mariage cousin, ordination neveu, anniversaire grand-mère #2.'},{cat:'Cadeaux & surprises',amt:'4 000 ฿',desc:'Sac, téléphone belle-mère, moteur scooter beau-frère.',warn:'⚠ "juste une fois" chaque semaine'},{cat:'🐃 Le buffle malade',amt:'~50 000 ฿',desc:'LE classique. Le buffle de la belle-famille est malade. Vétérinaire urgent. Sinon il meurt. Tu paies.',special:'⚡ Probabilité : ~30% par trimestre',badge:'DÉPENSE SURPRISE™',pink:true}],en:[{cat:'House / Rent',amt:'12,000 ฿',desc:'2-3 bedroom house. The 3rd bedroom is officially "for guests".'},{cat:'Family food',amt:'9,000 ฿',desc:'Feeding 2 adults + mother-in-law + auntie + the MIL\'s dog.',warn:'hard mode: +4,000 ฿'},{cat:'Sin sod / family',amt:'5,000 ฿',desc:'Monthly transfer to her parents. It\'s cultural. You agreed to it.'},{cat:'Kids\' school',amt:'6,000 ฿',desc:'Private school, uniform, activities, books. You want the best, right?'},{cat:'Village celebrations',amt:'3,000 ฿',desc:'Cousin\'s wedding, nephew\'s ordination, grandma #2\'s birthday.'},{cat:'Gifts & surprises',amt:'4,000 ฿',desc:'Handbag, MIL\'s phone, brother-in-law\'s scooter engine.',warn:'⚠ "just this once" every single week'},{cat:'🐃 The sick buffalo',amt:'~50,000 ฿',desc:'THE classic. The family buffalo is ill. Emergency vet. Or it dies. You\'re paying.',special:'⚡ Probability: ~30% per quarter',badge:'SURPRISE EXPENSE™',pink:true}]}
+};
+
 const profiles={
-  mao:{label:'Farang Kee Mao',color:'var(--orange)',chaosColor:'var(--orange)',buffalo:false,
-    items:[{cat:'🏠 Logement (zone chaude)',base:15000,inflRate:0.04},{cat:'🍺 Alcool & bières',base:18000,inflRate:0.12},{cat:'💃 Go-Go bars & lady drinks',base:12000,inflRate:0.15},{cat:'🍜 Bouffe',base:6000,inflRate:0.05},{cat:'🛺 Transport',base:3000,inflRate:0.03},{cat:'💀 Imprévus / amendes',base:8000,inflRate:0.08}],
-    chaosEvents:[
-      {emoji:'💀',reason:'DÉPOUILLÉ PAR DEUX LADYBOYS',story:`T'étais tellement saoul hier soir que t'as ramené <strong>deux ladyboys depuis Nana Plaza</strong>. Au réveil : téléphone parti, portefeuille parti, montre partie. <strong>Même le passeport a disparu.</strong> Tu te réveilles en slip avec juste un billet de 20 ฿ et une gueule de bois cosmique.`,loss:[15000,45000],suffix:'฿ pillés pendant ton sommeil 😭'},
-      {emoji:'🛵',reason:'ACCIDENT DE SCOOTER',story:`T'avais dit que tu connaissais la route. <strong>T'avais tort.</strong> Accident à 2h du mat, sans casque, après 12 bières. <strong>Fracture du bras, scooter détruit, amende, hospitalisation Bumrungrad.</strong> L'assurance couvre rien.`,loss:[35000,80000],suffix:'฿ partis aux urgences 🏥'},
-      {emoji:'🎰',reason:'CASINO CAMBODGE',story:`"On fait juste un tour au casino côté Cambodge." <strong>C'est ce que t'as dit.</strong> 6 heures plus tard, deux mois de loyer au baccarat, 15 Red Bull whisky, et un truc signé que tu comprends pas. <strong>Bienvenue à Poipet.</strong>`,loss:[20000,70000],suffix:'฿ cramés au baccarat 🃏'},
-      {emoji:'👮',reason:'INTERPELLÉ EN ÉTAT D\'IVRESSE',story:`La police de Pattaya t'a trouvé endormi sur le capot d'un tuk-tuk à 5h du mat. <strong>Garde à vue, amende, bakchich négocié avec le brigadier.</strong> Ton ambassade répond pas le dimanche.`,loss:[8000,25000],suffix:'฿ d\'amende + dessous-de-table 👮'},
-      {emoji:'🤵',reason:'ARNAQUE AU TAILLEUR',story:`Un mec sympa t'a amené dans "la meilleure boutique de costumes, ami prix spécial". <strong>3 costumes commandés, 40% payés d'avance.</strong> Le tailleur rappelle jamais. Les costumes existent pas. <strong>Tout le monde te l'avait dit.</strong>`,loss:[6000,18000],suffix:'฿ pour des costumes fantômes 👔'},
-    ]},
-  nomad:{label:'Digital Nomad Broke',color:'var(--green)',chaosColor:'var(--green)',buffalo:false,
-    items:[{cat:'🏠 Chambre / Airbnb',base:7500,inflRate:0.06},{cat:'💻 Coworking + café',base:5500,inflRate:0.07},{cat:'🍜 Street food',base:4500,inflRate:0.03},{cat:'🛵 Scooter + transport',base:2000,inflRate:0.02},{cat:'🛂 Visa run',base:1500,inflRate:0.01},{cat:'📦 Extras & urgences',base:3000,inflRate:0.04}],
-    chaosEvents:[
-      {emoji:'🪣',reason:'FULL MOON PARTY — BUCKET SUSPECT',story:`Full Moon Party à Koh Phangan. T'as bu dans un bucket plastique avec une paille. <strong>Ce que y'avait dedans, on sait pas vraiment.</strong> Réveil à l'hôpital de Surat Thani deux jours plus tard. <strong>L'assurance t'a demandé si t'avais bu de l'alcool local.</strong> T'as dit non.`,loss:[18000,50000],suffix:'฿ d\'hospitalisation post-bucket 🪣'},
-      {emoji:'💻',reason:'LAPTOP MORT',story:`Ton MacBook a rendu l'âme à cause de l'humidité du dortoir. <strong>Panne totale, disque non récupérable.</strong> 3 mois de projets clients partis. Tu dois racheter un ordi et rembourser un client. <strong>Les clients comprennent pas pourquoi t'es en arrêt depuis la Thaïlande.</strong>`,loss:[25000,55000],suffix:'฿ partis avec le laptop 💻'},
-      {emoji:'🛂',reason:'OVERSTAY VISA — INTERDIT DE TERRITOIRE',story:`T'as oublié de renouveler ton visa. <strong>De 3 semaines.</strong> Chopé à l'aéroport. 500 ฿ par jour d'overstay, rétention, avocat local, et <strong>interdiction de territoire 1 an.</strong> Belle fin de l'aventure nomade.`,loss:[12000,35000],suffix:'฿ d\'amende overstay + avocat 🛂'},
-      {emoji:'🦟',reason:'DENGUE',story:`T'as économisé sur la crème anti-moustiques. <strong>Mauvaise idée.</strong> Dengue confirmée, 5 jours hospitalisé à Chiang Mai Ram. Perfusions toutes les 4h. <strong>Les clients comprennent pas pourquoi t'es en arrêt depuis la Thaïlande.</strong>`,loss:[20000,45000],suffix:'฿ de dengue + jours perdus 🦟'},
-      {emoji:'🏍️',reason:'SCOOTER VOLÉ',story:`Tu reviens au parking et il est plus là. <strong>Volatilisé.</strong> Le propriétaire réclame la valeur intégrale + pénalités. Tu contestes. Il appelle deux cousins. <strong>Tu paies.</strong>`,loss:[80000,80000],suffix:'฿ pour le scooter de quelqu\'un d\'autre 🏍️'},
-    ]},
-  issan:{label:'Issan Girlfriend',color:'var(--pink)',chaosColor:'var(--pink)',buffalo:true,
-    items:[{cat:'🏠 Maison (2-3 chambres)',base:12000,inflRate:0.05},{cat:'🍚 Nourriture famille',base:9000,inflRate:0.06},{cat:'💸 Sin sod / famille mensuel',base:5000,inflRate:0.04},{cat:'🎒 École enfant(s)',base:6000,inflRate:0.03},{cat:'🎉 Fêtes de village',base:3000,inflRate:0.03},{cat:'🎁 Cadeaux & surprises',base:4000,inflRate:0.08}],
-    chaosEvents:[
-      {emoji:'🐃',reason:'LE BUFFLE EST MORT',story:`Le buffle est décédé. <strong>Malgré les 50 000 ฿ de vétérinaire du mois dernier.</strong> Cérémonie 3 jours, buffet, moines, nouveau buffle à racheter. La belle-mère dit que c'est "pour la chance de la famille". <strong>Ta chance à toi, elle est déjà partie.</strong>`,loss:[40000,90000],suffix:'฿ pour le buffle et ses funérailles 🐃'},
-      {emoji:'🏠',reason:'RÉNOVATION MAISON DES PARENTS',story:`La maison des parents "a besoin de réparations urgentes". <strong>Toit, murs, salle de bain, cuisine.</strong> Refuser serait "très honteux". <strong>L'entrepreneur est le frère de la belle-mère.</strong> Le devis est salé.`,loss:[60000,150000],suffix:'฿ pour rénover la maison de quelqu\'un d\'autre 🏠'},
-      {emoji:'💒',reason:'MARIAGE DU COUSIN — T\'ES LE SPONSOR',story:`Le cousin se marie. <strong>Tu es le farang riche de la famille.</strong> La belle-mère a annoncé ton "cadeau" aux invités avant que tu sois au courant. <strong>Tout le village sait. Tu peux pas te dédire.</strong>`,loss:[15000,45000],suffix:'฿ pour un mariage où t\'étais figurant 💒'},
-      {emoji:'🧧',reason:'SONGKRAN FAMILY EDITION',story:`Songkran : <strong>3 jours, 40 personnes à nourrir, feux d'artifice, tenues, un cochon entier.</strong> "Juste quelques proches." Les proches ont invité leurs proches. T'as tenu jusqu'au deuxième jour. <strong>Ensuite t'as sorti la carte.</strong>`,loss:[12000,35000],suffix:'฿ pour Songkran family size 🧧'},
-      {emoji:'📱',reason:'T\'ES LE APPLE STORE DU VILLAGE',story:`Belle-mère : nouveau téléphone. Beau-père : en veut un. Grand frère. Sœur cadette "pour l'école". Cousin qui "travaille dur". Ta femme : yeux de Puss in Boots. <strong>5 téléphones en deux mois.</strong>`,loss:[18000,40000],suffix:'฿ de téléphones pour toute la belle-famille 📱'},
-    ]}
+  mao:{color:'var(--orange)',chaosColor:'var(--orange)',buffalo:false,items:[{base:15000,inflRate:0.04},{base:18000,inflRate:0.12},{base:12000,inflRate:0.15},{base:6000,inflRate:0.05},{base:3000,inflRate:0.03},{base:8000,inflRate:0.08}],cats:{fr:['🏠 Logement','🍺 Alcool & bières','💃 Go-Go & lady drinks','🍜 Bouffe','🛺 Transport','💀 Imprévus'],en:['🏠 Accommodation','🍺 Alcohol & beers','💃 Go-Go & lady drinks','🍜 Food','🛺 Transport','💀 Unexpected costs']},chaosEvents:{fr:[{emoji:'💀',reason:'DÉPOUILLÉ PAR DEUX LADYBOYS',story:`T'étais tellement saoul que t'as ramené <strong>deux ladyboys depuis Nana Plaza</strong>. Au réveil : téléphone parti, portefeuille parti, montre partie. <strong>Même le passeport a disparu.</strong> Tu te réveilles en slip avec 20 ฿ et une gueule de bois cosmique.`,loss:[15000,45000],suffix:'฿ pillés pendant ton sommeil 😭'},{emoji:'🛵',reason:'ACCIDENT DE SCOOTER',story:`T'avais dit que tu connaissais la route. <strong>T'avais tort.</strong> Accident à 2h du mat, sans casque, après 12 bières. <strong>Fracture du bras, scooter détruit, amende, hospitalisation Bumrungrad.</strong>`,loss:[35000,80000],suffix:'฿ partis aux urgences 🏥'},{emoji:'🎰',reason:'CASINO CAMBODGE',story:`"On fait juste un tour au casino." <strong>C'est ce que t'as dit.</strong> 6h plus tard, deux mois de loyer au baccarat, 15 Red Bull whisky, et un truc signé que tu comprends pas. <strong>Bienvenue à Poipet.</strong>`,loss:[20000,70000],suffix:'฿ cramés au baccarat 🃏'},{emoji:'👮',reason:'INTERPELLÉ EN ÉTAT D\'IVRESSE',story:`La police t'a trouvé endormi sur le capot d'un tuk-tuk à 5h du mat. <strong>Garde à vue, amende, bakchich négocié avec le brigadier.</strong> Ton ambassade répond pas le dimanche.`,loss:[8000,25000],suffix:'฿ d\'amende + dessous-de-table 👮'},{emoji:'🤵',reason:'ARNAQUE AU TAILLEUR',story:`Un mec sympa t'a amené dans "la meilleure boutique de Bangkok, ami prix spécial". <strong>3 costumes commandés, 40% payés d'avance.</strong> Le tailleur rappelle jamais. <strong>Tout le monde te l'avait dit.</strong>`,loss:[6000,18000],suffix:'฿ pour des costumes fantômes 👔'}],en:[{emoji:'💀',reason:'ROBBED BY TWO LADYBOYS',story:`You were so drunk you brought <strong>two ladyboys back from Nana Plaza</strong>. Morning: phone gone, wallet gone, watch gone. <strong>Even the passport has vanished.</strong> You wake up in your boxers with a 20 ฿ note and a world-class hangover.`,loss:[15000,45000],suffix:'฿ nicked while you slept 😭'},{emoji:'🛵',reason:'SCOOTER ACCIDENT',story:`You said you knew the road. <strong>You didn\'t.</strong> Crashed at 2am, no helmet, 12 beers deep. <strong>Broken arm, scooter written off, police fine, Bumrungrad hospital.</strong> Insurance covers nothing.`,loss:[35000,80000],suffix:'฿ gone on hospital bills 🏥'},{emoji:'🎰',reason:'CAMBODIA CASINO',story:`"Just a quick look at the casino over the border." <strong>That\'s what you said.</strong> Six hours later: two months\' rent lost at baccarat, 15 complimentary Red Bull whiskies, and a document signed you don\'t understand. <strong>Welcome to Poipet.</strong>`,loss:[20000,70000],suffix:'฿ torched at baccarat 🃏'},{emoji:'👮',reason:'ARRESTED WHILE PARALYTIC',story:`Pattaya police found you asleep on a tuk-tuk bonnet at 5am with an empty Sang Som bottle. <strong>Held overnight, fined, bribed the sergeant.</strong> The embassy doesn\'t answer on Sundays.`,loss:[8000,25000],suffix:'฿ in fines + backhanders 👮'},{emoji:'🤵',reason:'TAILOR SCAM',story:`A friendly bloke took you to "the best suit shop in Bangkok, special friend price". <strong>3 suits ordered, 40% paid upfront.</strong> The tailor never calls back. The suits don\'t exist. <strong>Everyone told you. Everyone.</strong>`,loss:[6000,18000],suffix:'฿ for ghost suits 👔'}]}},
+  nomad:{color:'var(--green)',chaosColor:'var(--green)',buffalo:false,items:[{base:7500,inflRate:0.06},{base:5500,inflRate:0.07},{base:4500,inflRate:0.03},{base:2000,inflRate:0.02},{base:1500,inflRate:0.01},{base:3000,inflRate:0.04}],cats:{fr:['🏠 Chambre / Airbnb','💻 Coworking + café','🍜 Street food','🛵 Scooter + transport','🛂 Visa run','📦 Extras & urgences'],en:['🏠 Room / Airbnb','💻 Coworking + café','🍜 Street food','🛵 Scooter + transport','🛂 Visa run','📦 Extras & emergencies']},chaosEvents:{fr:[{emoji:'🪣',reason:'FULL MOON PARTY — BUCKET SUSPECT',story:`Full Moon Party à Koh Phangan. T'as bu dans un bucket plastique avec une paille. <strong>Ce que y'avait dedans, on sait pas vraiment.</strong> Réveil à l'hôpital de Surat Thani deux jours plus tard. <strong>L'assurance t'a demandé si t'avais bu de l'alcool local.</strong> T'as dit non.`,loss:[18000,50000],suffix:'฿ d\'hospitalisation post-bucket 🪣'},{emoji:'💻',reason:'LAPTOP MORT',story:`Ton MacBook a rendu l'âme à cause de l'humidité du dortoir. <strong>Panne totale, disque non récupérable.</strong> 3 mois de projets clients partis. Tu dois racheter un ordi et rembourser un client.`,loss:[25000,55000],suffix:'฿ partis avec le laptop 💻'},{emoji:'🛂',reason:'OVERSTAY VISA — INTERDIT DE TERRITOIRE',story:`T'as oublié de renouveler ton visa. <strong>De 3 semaines.</strong> Chopé à l'aéroport. 500 ฿ par jour, rétention, avocat local, et <strong>interdiction de territoire 1 an.</strong>`,loss:[12000,35000],suffix:'฿ d\'amende overstay + avocat 🛂'},{emoji:'🦟',reason:'DENGUE',story:`T'as économisé sur la crème anti-moustiques. <strong>Mauvaise idée.</strong> Dengue confirmée, 5 jours hospitalisé. Perfusions toutes les 4h.`,loss:[20000,45000],suffix:'฿ de dengue + jours perdus 🦟'},{emoji:'🏍️',reason:'SCOOTER VOLÉ',story:`Tu reviens au parking et il est plus là. <strong>Volatilisé.</strong> Le propriétaire réclame la valeur intégrale + pénalités. Tu contestes. Il appelle deux cousins. <strong>Tu paies.</strong>`,loss:[80000,80000],suffix:'฿ pour le scooter de quelqu\'un d\'autre 🏍️'}],en:[{emoji:'🪣',reason:'FULL MOON PARTY — DODGY BUCKET',story:`Full Moon Party on Koh Phangan. You drank from a plastic bucket with a straw. <strong>Nobody really knows what was in it.</strong> You wake up in Surat Thani hospital two days later. <strong>The travel insurance asked if you\'d consumed "local alcohol".</strong> You said no.`,loss:[18000,50000],suffix:'฿ in hospital bills post-bucket 🪣'},{emoji:'💻',reason:'LAPTOP DEAD',story:`Your MacBook died from the dorm hostel humidity. <strong>Total failure, drive unrecoverable.</strong> Three months of client work gone. You need a new laptop and have to refund a client.`,loss:[25000,55000],suffix:'฿ went with the laptop 💻'},{emoji:'🛂',reason:'VISA OVERSTAY — BANNED FROM THAILAND',story:`You forgot to renew your visa. <strong>By three weeks.</strong> Caught at the airport. 500 ฿ per overstay day, detention, local solicitor, and <strong>one-year entry ban.</strong>`,loss:[12000,35000],suffix:'฿ in overstay fines + legal fees 🛂'},{emoji:'🦟',reason:'DENGUE FEVER',story:`You skimped on mosquito repellent. <strong>Bad shout.</strong> Dengue confirmed, 5 days in Chiang Mai Ram Hospital. Drip every 4 hours.`,loss:[20000,45000],suffix:'฿ on dengue + lost income 🦟'},{emoji:'🏍️',reason:'SCOOTER NICKED',story:`You come back to the car park and it\'s gone. <strong>Vanished.</strong> The owner wants full replacement value plus penalties. You argue. He calls two cousins. <strong>You pay.</strong>`,loss:[80000,80000],suffix:'฿ for someone else\'s scooter 🏍️'}]}},
+  issan:{color:'var(--pink)',chaosColor:'var(--pink)',buffalo:true,items:[{base:12000,inflRate:0.05},{base:9000,inflRate:0.06},{base:5000,inflRate:0.04},{base:6000,inflRate:0.03},{base:3000,inflRate:0.03},{base:4000,inflRate:0.08}],cats:{fr:['🏠 Maison (2-3 chambres)','🍚 Nourriture famille','💸 Sin sod / famille','🎒 École enfant(s)','🎉 Fêtes de village','🎁 Cadeaux & surprises'],en:['🏠 House (2-3 bedrooms)','🍚 Family food','💸 Sin sod / family','🎒 Kids\' school','🎉 Village celebrations','🎁 Gifts & surprises']},chaosEvents:{fr:[{emoji:'🐃',reason:'LE BUFFLE EST MORT',story:`Le buffle est décédé. <strong>Malgré les 50 000 ฿ de vétérinaire du mois dernier.</strong> Cérémonie 3 jours, buffet, moines, nouveau buffle à racheter. <strong>Ta chance à toi, elle est déjà partie.</strong>`,loss:[40000,90000],suffix:'฿ pour le buffle et ses funérailles 🐃'},{emoji:'🏠',reason:'RÉNOVATION MAISON DES PARENTS',story:`La maison des parents "a besoin de réparations urgentes". <strong>Toit, murs, salle de bain, cuisine.</strong> Refuser serait "très honteux". <strong>L'entrepreneur est le frère de la belle-mère.</strong>`,loss:[60000,150000],suffix:'฿ pour rénover la maison de quelqu\'un d\'autre 🏠'},{emoji:'💒',reason:'MARIAGE DU COUSIN — T\'ES LE SPONSOR',story:`Le cousin se marie. <strong>Tu es le farang riche de la famille.</strong> La belle-mère a annoncé ton "cadeau" aux invités avant que tu sois au courant. <strong>Tout le village sait. Tu peux pas te dédire.</strong>`,loss:[15000,45000],suffix:'฿ pour un mariage où t\'étais figurant 💒'},{emoji:'🧧',reason:'SONGKRAN FAMILY EDITION',story:`Songkran : <strong>3 jours, 40 personnes à nourrir, feux d'artifice, tenues, un cochon entier.</strong> "Juste quelques proches." T'as tenu jusqu'au deuxième jour. <strong>Ensuite t'as sorti la carte.</strong>`,loss:[12000,35000],suffix:'฿ pour Songkran family size 🧧'},{emoji:'📱',reason:'T\'ES LE APPLE STORE DU VILLAGE',story:`Belle-mère : nouveau téléphone. Beau-père : en veut un. Grand frère. Sœur cadette "pour l'école". Cousin qui "travaille dur". Ta femme : yeux de Puss in Boots. <strong>5 téléphones en deux mois.</strong>`,loss:[18000,40000],suffix:'฿ de téléphones pour toute la belle-famille 📱'}],en:[{emoji:'🐃',reason:'THE BUFFALO DIED',story:`The buffalo is dead. <strong>Despite the 50,000 ฿ vet bills you paid last month.</strong> Three-day ceremony: buffet, monks, replacement buffalo required. <strong>Your luck left with your savings.</strong>`,loss:[40000,90000],suffix:'฿ for the buffalo and its funeral 🐃'},{emoji:'🏠',reason:'PARENTS\' HOUSE RENOVATION',story:`Her parents\' house "urgently needs repairs". <strong>Roof, walls, bathroom, kitchen.</strong> Refusing would be "very shameful". <strong>The builder is her mum\'s brother.</strong>`,loss:[60000,150000],suffix:'฿ to renovate someone else\'s house 🏠'},{emoji:'💒',reason:'COUSIN\'S WEDDING — YOU\'RE THE BANK',story:`The cousin is getting married. <strong>You\'re officially the rich farang of the family.</strong> Her mum announced your "gift" before you knew about it. <strong>The whole village knows. You can\'t back out.</strong>`,loss:[15000,45000],suffix:'฿ for a wedding where you were an extra 💒'},{emoji:'🧧',reason:'SONGKRAN FAMILY EDITION',story:`Songkran: <strong>3 days, 40 people to feed, fireworks, outfits, one whole pig.</strong> "Just a few close family." You held the budget until day two. <strong>Then you got the card out.</strong>`,loss:[12000,35000],suffix:'฿ for Songkran family size 🧧'},{emoji:'📱',reason:'YOU\'RE THE VILLAGE APPLE STORE',story:`Mother-in-law: new phone. Father-in-law: wants one too. Big brother. Little sister "for school". Cousin who "works hard". Girlfriend does the Puss in Boots eyes. <strong>5 phones in two months.</strong>`,loss:[18000,40000],suffix:'฿ in phones for the entire family 📱'}]}}
 };
-const punchlines={
-  godmode:['👑 T\'es un vrai roi. La Thaïlande t\'appartient, les éléphants te saluent.','🏆 Respecté. T\'as plus de mois devant toi que de neurones. Profite.','💎 KING STATUS. Tu peux même te payer une belle-mère supplémentaire.'],
-  chill:['😎 T\'as encore de la marge. Tu vas même faire des économies.','🤙 Tranquille boss. La Thaïlande est à toi pour un bon moment.','🌴 La vie est belle. Profite, mais garde un œil sur le buffle.','👍 T\'aurais pu claquer ça en une nuit à Pattaya.'],
-  decent:['🙂 C\'est correct. T\'as le temps de voir venir.','📊 Ça tient. Évite les imprévus et les amis qui "passent juste deux semaines".','👀 Plutôt bien. Mais une nuit à Walking Street peut tout changer.'],
-  hmm:['😬 Ça commence à sentir le sapin, bro.','🌡️ Entre tenir et craquer, y\'a juste une bucket list.','⚠️ Commence à préparer un plan B.','🎢 La Thaïlande te teste.'],
-  rough:['😰 Tu vas bientôt revendre ton scooter à un Thaï de 16 ans.','🛵 Le scooter part en premier. Ensuite c\'est la dignité.','📉 Mode survie. Street food à 30 ฿. Plus de clim.','🧟 T\'es pas encore mort mais t\'es plus vraiment vivant.'],
-  danger:['🆘 Prépare ton billet retour.','📞 Appelle ta mère. Elle savait depuis le début.','💸 La Thaïlande t\'a tout pris.','😭 Instant noodles et Koh Lanta pour te sentir moins seul.'],
-  terminal:['☠️ Appelle ta mère et dis-lui que t\'as perdu.','🪦 Le Farang Kee Nok retourne au nid. Honteux mais vivant.','📺 Ta vie est un épisode de "Français ruinés à l\'étranger" sur M6.'],
-};
-function getPunchline(m){let p=m>=30?punchlines.godmode:m>=15?punchlines.chill:m>=8?punchlines.decent:m>=4?punchlines.hmm:m>=2?punchlines.rough:m>=1?punchlines.danger:punchlines.terminal;return p[Math.floor(Math.random()*p.length)];}
-function getStatus(m){if(m>=30)return{pct:98,color:'var(--green)',label:'👑 KING MODE'};if(m>=15)return{pct:80,color:'var(--green)',label:'😎 Stable'};if(m>=8)return{pct:60,color:'var(--yellow)',label:'🙂 Correct'};if(m>=4)return{pct:38,color:'var(--orange)',label:'⚠️ Attention'};if(m>=2)return{pct:20,color:'var(--orange)',label:'😰 Mode galère'};if(m>=1)return{pct:10,color:'var(--red)',label:'🆘 En détresse'};return{pct:3,color:'var(--red)',label:'☠️ GAME OVER'};}
-function computeItems(key,budget){const ratio=budget/baseBudget;return profiles[key].items.map(item=>{const f=1+(ratio-1)*item.inflRate*5;return{...item,computed:Math.round(item.base*Math.max(0.7,f)/100)*100};});}
-let currentMode=null,selectedStyle='nomad',budgetVal=40000;
-function setMode(m){
-  if(currentMode===m){document.getElementById('panel-'+m).classList.remove('visible');document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));currentMode=null;return;}
-  ['mao','nomad','issan','sim'].forEach(x=>{document.getElementById('panel-'+x).classList.remove('visible');document.querySelector('.mode-btn.'+x).classList.remove('active');});
-  document.getElementById('panel-'+m).classList.add('visible');document.querySelector('.mode-btn.'+m).classList.add('active');currentMode=m;
-  if(m==='sim')renderLivePreview();
+
+const punchlines={fr:{godmode:['👑 T\'es un vrai roi. La Thaïlande t\'appartient, les éléphants te saluent.','🏆 Respecté. T\'as plus de mois devant toi que de neurones. Profite.','💎 KING STATUS. Tu peux même te payer une belle-mère supplémentaire.'],chill:['😎 T\'as encore de la marge. Tu vas même faire des économies.','🤙 Tranquille boss. La Thaïlande est à toi pour un bon moment.','🌴 La vie est belle. Profite, mais garde un œil sur le buffle.'],decent:['🙂 C\'est correct. T\'as le temps de voir venir.','📊 Ça tient. Évite les imprévus et les amis qui "passent juste deux semaines".','👀 Mais une nuit à Walking Street peut tout changer.'],hmm:['😬 Ça commence à sentir le sapin, bro.','🌡️ Entre tenir et craquer, y\'a juste une bucket list.','⚠️ Commence à préparer un plan B.'],rough:['😰 Tu vas bientôt revendre ton scooter à un Thaï de 16 ans.','🛵 Le scooter part en premier. Ensuite c\'est la dignité.','📉 Mode survie. Street food à 30 ฿. Plus de clim.'],danger:['🆘 Prépare ton billet retour.','📞 Appelle ta mère. Elle savait depuis le début.','💸 La Thaïlande t\'a tout pris.','😭 Instant noodles et Koh Lanta pour te sentir moins seul.'],terminal:['☠️ Appelle ta mère et dis-lui que t\'as perdu.','🪦 Le Farang Kee Nok retourne au nid. Honteux mais vivant.','📺 Ta vie est un épisode de "Français ruinés à l\'étranger" sur M6.']},en:{godmode:['👑 Absolute king. Thailand is yours. The tuk-tuks bow as you pass.','🏆 Respect. You\'ve got more months ahead than brain cells. Enjoy.','💎 KING STATUS. You could even afford a second mother-in-law.'],chill:['😎 You\'ve got plenty of runway. You might even save a bit.','🤙 Sorted, mate. Thailand\'s yours for a good while yet.','🌴 Living the dream. Just keep an eye on the buffalo.'],decent:['🙂 Not bad at all. You\'ve got time to figure it out.','📊 Holding up. Avoid surprises and mates who "just pop over for two weeks".','👀 Decent shape. One night on Walking Street could change everything.'],hmm:['😬 Starting to look a bit dodgy, mate.','🌡️ Between coping and collapsing, there\'s just one bucket list.','⚠️ Don\'t panic, but start thinking about Plan B.'],rough:['😰 You\'ll soon be flogging your scooter to a 16-year-old Thai lad.','🛵 Scooter goes first. Then the fan. Then your self-respect.','📉 Survival mode. Street food only. No AC.'],danger:['🆘 Book the easyJet back to Gatwick. It\'s time.','📞 Ring your mum. She knew from the start.','💸 Thailand took everything. Impressive commitment, tbf.','😭 Pot noodles and reruns of The Beach to feel something.'],terminal:['☠️ Ring your mum and tell her you lost. She\'ll have known for months.','🪦 The Farang Kee Nok is heading home. Skint but breathing.','📺 Your life is now a Jeremy Kyle special. "I blew everything in Thailand."','🛫 The Ryanair flight to Stansted leaves in 6 hours. Leg it.']}};
+
+function renderPanelCards(){['mao','nomad','issan'].forEach(key=>{const cards=panelCards[key][lang];let html='';cards.forEach(c=>{html+=`<div class="ecard${c.pink?' special':''}"><div class="ecat">${c.cat}</div><div class="eamt"${c.pink?` style="color:var(--pink)"`:''}>${c.amt}</div><div class="edesc">${c.desc}</div>${c.warn?`<div class="ewarn">${c.warn}</div>`:''}${c.special?`<div class="especial">${c.special}</div>`:''}${c.badge?`<div class="buffalo-badge">${c.badge}</div>`:''}`;html+='</div>';});document.getElementById(key+'-grid').innerHTML=html;});}
+
+function applyLang(){
+  const t=ui[lang];
+  const ids={tagline:'tagline',badge:'badge',maoTitle:'mao-title',nomadTitle:'nomad-title',issanTitle:'issan-title',simTitle:'sim-title',budgetLabel:'budget-label',hintLow:'hint-low',hintHigh:'hint-high',lifestyleLabel:'lifestyle-label',soptMao:'sopt-mao',soptNomad:'sopt-nomad',soptIssan:'sopt-issan',lpTitle:'lp-title',lpTotalLabel:'lp-total-label',calcBtn:'calc-btn',rhPre:'rh-pre',rhLabel:'rh-label',sbTitle:'sb-title',rbTitle:'rb-title',resetBtn:'reset-btn',goCloseBtn:'go-close-btn'};
+  Object.entries(ids).forEach(([k,id])=>{const el=document.getElementById(id);if(el)el.textContent=t[k]||'';});
+  document.getElementById('lbl-mao').innerHTML=t.lblMao;document.getElementById('lbl-nomad').innerHTML=t.lblNomad;document.getElementById('lbl-issan').innerHTML=t.lblIssan;document.getElementById('lbl-sim').innerHTML=t.lblSim;
+  document.getElementById('mao-total-label').textContent=t.totalLabel;document.getElementById('nomad-total-label').textContent=t.totalLabel;document.getElementById('issan-total-label').textContent=t.issanTotalLabel;
+  document.getElementById('mao-disc').textContent=t.maoDisc;document.getElementById('mao-disc2').textContent=t.maoDisc2;document.getElementById('nomad-disc').textContent=t.nomadDisc;document.getElementById('nomad-disc2').textContent=t.nomadDisc2;document.getElementById('issan-disc').textContent=t.issanDisc;document.getElementById('issan-disc2').textContent=t.issanDisc2;
+  document.getElementById('rh-mois-label').textContent=t.rhMois;document.getElementById('footer-text').innerHTML=t.footer;
+  renderPanelCards();renderLivePreview();
 }
+
+function setLang(l){lang=l;document.getElementById('lang-modal').classList.add('hide');document.getElementById('btn-fr').classList.toggle('active',l==='fr');document.getElementById('btn-en').classList.toggle('active',l==='en');document.getElementById('result-zone').classList.remove('show');applyLang();}
+
+function computeItems(key,budget){const ratio=budget/baseBudget;return profiles[key].items.map((item,i)=>{const f=1+(ratio-1)*item.inflRate*5;return{computed:Math.round(item.base*Math.max(0.7,f)/100)*100,cat:profiles[key].cats[lang][i]};});}
+function getPunchline(m){const p=punchlines[lang];let pool=m>=30?p.godmode:m>=15?p.chill:m>=8?p.decent:m>=4?p.hmm:m>=2?p.rough:m>=1?p.danger:p.terminal;return pool[Math.floor(Math.random()*pool.length)];}
+function getStatus(m){const sl=ui[lang].statusLabels;if(m>=30)return{pct:98,color:'var(--green)',label:sl.godmode};if(m>=15)return{pct:80,color:'var(--green)',label:sl.chill};if(m>=8)return{pct:60,color:'var(--yellow)',label:sl.decent};if(m>=4)return{pct:38,color:'var(--orange)',label:sl.hmm};if(m>=2)return{pct:20,color:'var(--orange)',label:sl.rough};if(m>=1)return{pct:10,color:'var(--red)',label:sl.danger};return{pct:3,color:'var(--red)',label:sl.terminal};}
+
+function setMode(m){if(currentMode===m){document.getElementById('panel-'+m).classList.remove('visible');document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));currentMode=null;return;}['mao','nomad','issan','sim'].forEach(x=>{document.getElementById('panel-'+x).classList.remove('visible');document.querySelector('.mode-btn.'+x).classList.remove('active');});document.getElementById('panel-'+m).classList.add('visible');document.querySelector('.mode-btn.'+m).classList.add('active');currentMode=m;if(m==='sim')renderLivePreview();}
 function selectStyle(s){selectedStyle=s;document.querySelectorAll('.sopt').forEach(el=>el.classList.remove('sel'));document.getElementById('s-'+s).classList.add('sel');renderLivePreview();document.getElementById('result-zone').classList.remove('show');}
-function onBudgetChange(v){budgetVal=parseInt(v);const eur=Math.round(budgetVal/EUR_RATE);document.getElementById('budget-val').textContent=budgetVal.toLocaleString('fr-FR')+' ฿ ≈ '+eur.toLocaleString('fr-FR')+' €';renderLivePreview();document.getElementById('result-zone').classList.remove('show');}
-function renderLivePreview(){
-  const items=computeItems(selectedStyle,budgetVal),total=items.reduce((s,i)=>s+i.computed,0),maxAmt=Math.max(...items.map(i=>i.computed)),p=profiles[selectedStyle];
-  let html='';
-  items.forEach(item=>{const pct=Math.round((item.computed/total)*100),bp=Math.round((item.computed/maxAmt)*100);html+=`<div class="lp-row"><span class="lp-cat">${item.cat}</span><div class="lp-bar-wrap"><div class="lp-bar-inner" style="width:${bp}%;background:${p.color}44"></div></div><span style="color:${p.color};font-family:'Teko',sans-serif;font-size:0.9rem">${item.computed.toLocaleString('fr-FR')} ฿ <span style="color:var(--text3);font-size:0.5rem">${pct}%</span></span></div>`;});
-  document.getElementById('lp-rows').innerHTML=html;document.getElementById('lp-total').textContent=total.toLocaleString('fr-FR')+' ฿';document.getElementById('lp-total').style.color=p.color;
-  const bzone=document.getElementById('buffalo-alert-zone');
-  if(selectedStyle==='issan')bzone.innerHTML=`<div class="buffalo-alert">🐃 <strong>LE BUFFLE MALADE — Dépense surprise</strong><br>Probabilité : ~30% par trimestre. Montant typique : <strong style="color:var(--pink)">30 000 – 80 000 ฿</strong> en une seule fois.<br><span style="color:var(--text3);font-size:0.55rem">Le vétérinaire du village ne fait pas de crédit. La belle-mère, si — mais avec intérêts affectifs.</span></div>`;
-  else bzone.innerHTML='';
-}
-function showGameOver(ev,loss,color){
-  const box=document.getElementById('go-box');box.style.setProperty('--go-color',color);
-  document.getElementById('go-reason').textContent=ev.reason;document.getElementById('go-emoji').textContent=ev.emoji;document.getElementById('go-story').innerHTML=ev.story;document.getElementById('go-loss').textContent=loss.toLocaleString('fr-FR')+' '+ev.suffix;
-  document.getElementById('go-overlay').classList.add('show');
-}
+function onBudgetChange(v){budgetVal=parseInt(v);const eur=Math.round(budgetVal/EUR_RATE);const sym=lang==='en'?'£':'';const suf=lang==='fr'?' €':'';document.getElementById('budget-val').textContent=budgetVal.toLocaleString('fr-FR')+' ฿ ≈ '+sym+eur.toLocaleString('fr-FR')+suf;renderLivePreview();document.getElementById('result-zone').classList.remove('show');}
+
+function renderLivePreview(){const items=computeItems(selectedStyle,budgetVal),total=items.reduce((s,i)=>s+i.computed,0),maxAmt=Math.max(...items.map(i=>i.computed)),p=profiles[selectedStyle];let html='';items.forEach(item=>{const pct=Math.round((item.computed/total)*100),bp=Math.round((item.computed/maxAmt)*100);html+=`<div class="lp-row"><span class="lp-cat">${item.cat}</span><div class="lp-bar-wrap"><div class="lp-bar-inner" style="width:${bp}%;background:${p.color}44"></div></div><span style="color:${p.color};font-family:'Teko',sans-serif;font-size:0.9rem">${item.computed.toLocaleString('fr-FR')} ฿ <span style="color:var(--text3);font-size:0.5rem">${pct}%</span></span></div>`;});document.getElementById('lp-rows').innerHTML=html;document.getElementById('lp-total').textContent=total.toLocaleString('fr-FR')+' ฿';document.getElementById('lp-total').style.color=p.color;const bzone=document.getElementById('buffalo-alert-zone');if(selectedStyle==='issan')bzone.innerHTML=`<div class="buffalo-alert">${ui[lang].buffaloAlert}</div>`;else bzone.innerHTML='';}
+
+function showGameOver(ev,loss,color){const box=document.getElementById('go-box');box.style.setProperty('--go-color',color);document.getElementById('go-reason').textContent=ev.reason;document.getElementById('go-emoji').textContent=ev.emoji;document.getElementById('go-story').innerHTML=ev.story;document.getElementById('go-loss').textContent=loss.toLocaleString('fr-FR')+' '+ev.suffix;document.getElementById('go-overlay').classList.add('show');}
 function closeGameOver(){document.getElementById('go-overlay').classList.remove('show');}
-function simulate(){
-  const p=profiles[selectedStyle],items=computeItems(selectedStyle,budgetVal),total=items.reduce((s,i)=>s+i.computed,0);
-  let buffaloCost=0,buffaloHit=false;
-  if(p.buffalo&&Math.random()<0.30){buffaloHit=true;buffaloCost=Math.round((30000+Math.random()*50000)/1000)*1000;}
-  let chaosEv=null,chaosLoss=0;
-  if(Math.random()<0.25){chaosEv=p.chaosEvents[Math.floor(Math.random()*p.chaosEvents.length)];chaosLoss=chaosEv.loss[0]===chaosEv.loss[1]?chaosEv.loss[0]:Math.round((chaosEv.loss[0]+Math.random()*(chaosEv.loss[1]-chaosEv.loss[0]))/500)*500;}
-  const effectiveMonthly=total+(buffaloCost/3)+chaosLoss,months=Math.max(0,budgetVal/effectiveMonthly),fullMonths=Math.floor(months),days=Math.floor((months-fullMonths)*30),status=getStatus(months),punch=getPunchline(months);
-  const mEl=document.getElementById('rh-months'),mlEl=document.getElementById('rh-mois-label');
-  if(months>=120){mEl.textContent='∞';mEl.style.color='var(--green)';mlEl.style.color='var(--green)';}
-  else{mEl.textContent=fullMonths;mEl.style.color=status.color;mlEl.style.color=status.color;}
-  document.getElementById('rh-days').textContent=months<120?`et ${days} jour${days>1?'s':''}`:'pour toujours';document.getElementById('rh-days').style.color=status.color;
-  document.getElementById('rh-punch').textContent=punch;document.getElementById('rh-punch').style.color=status.color;document.getElementById('rh-punch').style.borderLeftColor=status.color;
-  document.getElementById('sb-fill').style.width=status.pct+'%';document.getElementById('sb-fill').style.background=status.color;document.getElementById('sb-label').textContent=status.label;document.getElementById('sb-label').style.color=status.color;
-  let rbHtml='';
-  items.forEach(item=>{const pct=Math.round((item.computed/effectiveMonthly)*100);rbHtml+=`<div class="rb-row"><span class="rb-cat">${item.cat}</span><span class="rb-amt" style="color:${p.color}">${item.computed.toLocaleString('fr-FR')} ฿<span class="rb-pct">${pct}%</span></span></div>`;});
-  if(buffaloHit)rbHtml+=`<div class="rb-row" style="border-color:var(--pink)"><span class="rb-cat" style="color:var(--pink)">🐃 Buffle malade (ce trimestre)</span><span class="rb-amt" style="color:var(--pink)">${buffaloCost.toLocaleString('fr-FR')} ฿<span class="rb-pct">⚡</span></span></div>`;
-  if(chaosEv)rbHtml+=`<div class="rb-row" style="border-color:${p.chaosColor}"><span class="rb-cat" style="color:${p.chaosColor}">💥 Événement catastrophe</span><span class="rb-amt" style="color:${p.chaosColor}">${chaosLoss.toLocaleString('fr-FR')} ฿<span class="rb-pct">☠️</span></span></div>`;
-  rbHtml+=`<div class="rb-row"><span class="rb-cat" style="color:var(--text);text-transform:uppercase;letter-spacing:1px;font-size:0.6rem">Total mensuel effectif</span><span class="rb-amt" style="color:var(--text);font-size:1.2rem">${Math.round(effectiveMonthly).toLocaleString('fr-FR')} ฿</span></div>`;
-  document.getElementById('rb-rows').innerHTML=rbHtml;
-  const eurTotal=Math.round(effectiveMonthly/EUR_RATE);let note=`💡 Total effectif ≈ <strong>${eurTotal} €/mois</strong>.`;
-  if(buffaloHit)note+=` 🐃 <strong style="color:var(--pink)">Buffle frappé !</strong>`;if(chaosEv)note+=` 💥 <strong style="color:${p.chaosColor}">Événement catastrophe — voir pop-up.</strong>`;
-  document.getElementById('inflation-note').innerHTML=note;document.getElementById('result-zone').classList.add('show');document.getElementById('result-zone').scrollIntoView({behavior:'smooth',block:'nearest'});
-  if(chaosEv)setTimeout(()=>showGameOver(chaosEv,chaosLoss,p.chaosColor),800);
-}
+
+function simulate(){const p=profiles[selectedStyle],items=computeItems(selectedStyle,budgetVal),total=items.reduce((s,i)=>s+i.computed,0),t=ui[lang];let buffaloCost=0,buffaloHit=false;if(p.buffalo&&Math.random()<0.30){buffaloHit=true;buffaloCost=Math.round((30000+Math.random()*50000)/1000)*1000;}let chaosEv=null,chaosLoss=0;if(Math.random()<0.25){const evList=p.chaosEvents[lang];chaosEv=evList[Math.floor(Math.random()*evList.length)];chaosLoss=chaosEv.loss[0]===chaosEv.loss[1]?chaosEv.loss[0]:Math.round((chaosEv.loss[0]+Math.random()*(chaosEv.loss[1]-chaosEv.loss[0]))/500)*500;}const effectiveMonthly=total+(buffaloCost/3)+chaosLoss,months=Math.max(0,budgetVal/effectiveMonthly),fullMonths=Math.floor(months),days=Math.floor((months-fullMonths)*30),status=getStatus(months),punch=getPunchline(months);const mEl=document.getElementById('rh-months'),mlEl=document.getElementById('rh-mois-label');if(months>=120){mEl.textContent='∞';mEl.style.color='var(--green)';mlEl.style.color='var(--green)';}else{mEl.textContent=fullMonths;mEl.style.color=status.color;mlEl.style.color=status.color;}mlEl.textContent=t.rhMois;document.getElementById('rh-days').textContent=months<120?t.rhDaysFn(days):t.rhForever;document.getElementById('rh-days').style.color=status.color;document.getElementById('rh-punch').textContent=punch;document.getElementById('rh-punch').style.color=status.color;document.getElementById('rh-punch').style.borderLeftColor=status.color;document.getElementById('sb-fill').style.width=status.pct+'%';document.getElementById('sb-fill').style.background=status.color;document.getElementById('sb-label').textContent=status.label;document.getElementById('sb-label').style.color=status.color;let rbHtml='';items.forEach(item=>{const pct=Math.round((item.computed/effectiveMonthly)*100);rbHtml+=`<div class="rb-row"><span class="rb-cat">${item.cat}</span><span class="rb-amt" style="color:${p.color}">${item.computed.toLocaleString('fr-FR')} ฿<span class="rb-pct">${pct}%</span></span></div>`;});if(buffaloHit)rbHtml+=`<div class="rb-row" style="border-color:var(--pink)"><span class="rb-cat" style="color:var(--pink)">${t.buffaloRow}</span><span class="rb-amt" style="color:var(--pink)">${buffaloCost.toLocaleString('fr-FR')} ฿<span class="rb-pct">⚡</span></span></div>`;if(chaosEv)rbHtml+=`<div class="rb-row" style="border-color:${p.chaosColor}"><span class="rb-cat" style="color:${p.chaosColor}">${t.chaosRow}</span><span class="rb-amt" style="color:${p.chaosColor}">${chaosLoss.toLocaleString('fr-FR')} ฿<span class="rb-pct">☠️</span></span></div>`;rbHtml+=`<div class="rb-row"><span class="rb-cat" style="color:var(--text);text-transform:uppercase;letter-spacing:1px;font-size:0.6rem">${t.totalEffectif}</span><span class="rb-amt" style="color:var(--text);font-size:1.2rem">${Math.round(effectiveMonthly).toLocaleString('fr-FR')} ฿</span></div>`;document.getElementById('rb-rows').innerHTML=rbHtml;const eurTotal=Math.round(effectiveMonthly/EUR_RATE);let note=t.noteFn(eurTotal.toLocaleString('fr-FR'));if(buffaloHit)note+=t.buffaloNote;if(chaosEv)note+=t.chaosNote(p.chaosColor);document.getElementById('inflation-note').innerHTML=note;document.getElementById('result-zone').classList.add('show');document.getElementById('result-zone').scrollIntoView({behavior:'smooth',block:'nearest'});if(chaosEv)setTimeout(()=>showGameOver(chaosEv,chaosLoss,p.chaosColor),800);}
 function resetSim(){document.getElementById('result-zone').classList.remove('show');document.getElementById('budget-range').value=40000;onBudgetChange(40000);selectStyle('nomad');}
-renderLivePreview();
+
+applyLang();
 </script>
 </body>
 </html>
